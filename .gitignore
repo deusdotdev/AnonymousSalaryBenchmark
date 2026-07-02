@@ -66,6 +66,7 @@ Thumbs.db
 *.swo
 *~
 
-# --- Cursor (local IDE config — do not commit) ---
+# --- Cursor / local agent config (do not commit) ---
 .cursor/
+AGENTS.md
 agent-transcripts/
