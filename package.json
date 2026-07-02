@@ -1,0 +1,12 @@
+{
+  "name": "fhesalary",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "contracts:compile": "npm run compile -w @fhesalary/contracts",
+    "contracts:test": "npm run test -w @fhesalary/contracts",
+    "web:dev": "npm run dev -w @fhesalary/web"
+  }
+}
