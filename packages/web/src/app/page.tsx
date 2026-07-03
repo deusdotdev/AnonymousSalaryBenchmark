@@ -2,21 +2,28 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { LaunchMenu } from "@/components/LaunchMenu";
 import { PageContainer } from "@/components/PageContainer";
+import { FeatureIllustration } from "@/components/icons/FeatureIllustration";
+import type { IconName } from "@/components/icons/Icon";
+import { Icon } from "@/components/icons/Icon";
 import { MIN_PARTICIPANTS } from "@/lib/categories";
 
-const FEATURES = [
+const FEATURES: {
+  illustration: "encrypted" | "anonymity" | "comparison";
+  title: string;
+  body: string;
+}[] = [
   {
-    icon: "\u{1F512}",
+    illustration: "encrypted",
     title: "Encrypted submissions",
     body: "Your salary is encrypted in your browser as a euint64 and sent on-chain. No server, no database, no clear value anywhere.",
   },
   {
-    icon: "\u{1F465}",
+    illustration: "anonymity",
     title: "k-anonymity averages",
     body: `Category averages stay hidden until at least ${MIN_PARTICIPANTS} people join, so no single salary can ever be reverse-engineered.`,
   },
   {
-    icon: "\u{1F4CA}",
+    illustration: "comparison",
     title: "Private comparison",
     body: "Check whether you sit above or below the average with a signed, private decryption. Only you see your result.",
   },
@@ -37,7 +44,7 @@ export default function LandingPage() {
           <span className="h-2 w-2 animate-pulse-glow rounded-full bg-green" />
           Confidential salary benchmarks &middot; Zama FHEVM
         </div>
-        <h1 className="max-w-4xl bg-gradient-to-r from-green-deep via-green to-leaf bg-clip-text text-5xl font-black leading-[1.05] tracking-tight text-transparent sm:text-6xl lg:text-7xl">
+        <h1 className="max-w-4xl bg-gradient-to-r from-green-deep via-green to-leaf bg-clip-text pb-1 text-5xl font-black leading-snug tracking-tight text-transparent sm:text-6xl sm:leading-snug lg:text-7xl">
           Know your worth, without revealing it.
         </h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted sm:text-xl">
@@ -56,10 +63,17 @@ export default function LandingPage() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-muted">
-          <span>&#10003; euint64 encrypted</span>
-          <span>&#10003; k-anonymity &ge; {MIN_PARTICIPANTS}</span>
-          <span>&#10003; private FHE.gt comparison</span>
-          <span>&#10003; live on Sepolia</span>
+          {[
+            "euint64 encrypted",
+            `k-anonymity ≥ ${MIN_PARTICIPANTS}`,
+            "private FHE.gt comparison",
+            "live on Sepolia",
+          ].map((label) => (
+            <span key={label} className="inline-flex items-center gap-1.5">
+              <Icon name="check" size={14} className="text-green-deep" />
+              {label}
+            </span>
+          ))}
         </div>
         </div>
       </section>
@@ -68,9 +82,7 @@ export default function LandingPage() {
       <section className="mt-16 grid gap-6 md:grid-cols-3 xl:gap-8">
         {FEATURES.map((f, i) => (
           <Card key={f.title} glow={(["violet", "cyan", "emerald"] as const)[i]}>
-            <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-green to-green-deep text-xl">
-              {f.icon}
-            </span>
+            <FeatureIllustration variant={f.illustration} className="mb-5" />
             <h3 className="text-lg font-bold text-ink">{f.title}</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">{f.body}</p>
           </Card>

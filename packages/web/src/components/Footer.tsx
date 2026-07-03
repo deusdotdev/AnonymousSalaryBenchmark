@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { APP_NAME } from "@/lib/brand";
-import { MIN_PARTICIPANTS } from "@/lib/categories";
 import { PageContainer } from "@/components/PageContainer";
 
 const X_PROFILE_URL = "https://x.com/ex_machinam";
@@ -30,17 +29,6 @@ export function Footer() {
               Confidential salary benchmarks powered by fully homomorphic encryption.
               Share your number encrypted, see the market, never get exposed.
             </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              <span className="rounded-full border border-green/20 bg-green/10 px-3 py-1 text-xs font-semibold text-green-deep">
-                euint64 encrypted
-              </span>
-              <span className="rounded-full border border-green/20 bg-green/10 px-3 py-1 text-xs font-semibold text-green-deep">
-                k-anonymity &ge; {MIN_PARTICIPANTS}
-              </span>
-              <span className="rounded-full border border-green/20 bg-green/10 px-3 py-1 text-xs font-semibold text-green-deep">
-                Sepolia
-              </span>
-            </div>
           </div>
 
           <div>
@@ -95,7 +83,7 @@ export function Footer() {
           </p>
           <p className="flex items-center justify-center gap-2 text-xs text-muted sm:justify-end">
             <span className="h-2 w-2 animate-pulse-glow rounded-full bg-green" />
-            Live on Sepolia &middot; Next.js &middot; wagmi &middot; Relayer SDK
+            Next.js &middot; wagmi &middot; Relayer SDK
           </p>
         </div>
       </PageContainer>

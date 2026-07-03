@@ -23,6 +23,8 @@ Built for the [Zama Developer Program — Builder Track](https://www.zama.org/po
 - [Smart contract](#smart-contract)
 - [Running tests](#running-tests)
 - [Deploy to Sepolia](#deploy-to-sepolia)
+- [Explore](#explore-explore)
+- [Frontend notes](#frontend-notes)
 - [User flows](#user-flows)
 - [Documentation](#documentation)
 - [Security and limitations](#security-and-limitations)
@@ -57,6 +59,8 @@ Use cases: individual market positioning, confidential payroll benchmarking for 
 | **Live private compare** | `FHE.gt(yourSalary, poolAverage)` — user-decryptable only by submitter |
 | **Company benchmarking** | Unlimited encrypted employee entries; private above/below market bit |
 | **Rich categories** | 35 roles × 55 cities × 6 seniority levels |
+| **Explore dashboard** | Live pool health, tier trends, and community pools discovered from on-chain events |
+| **Sepolia seed tooling** | One-command demo data: 10 categories × 10 wallets + tier publish + manifest sync |
 | **No backend** | Wallet + relayer + contract only; no salary database |
 
 ---
@@ -68,7 +72,8 @@ Use cases: individual market positioning, confidential payroll benchmarking for 
 | **Network** | Ethereum Sepolia (chain ID `11155111`) |
 | **Contract** | [`0xb452901e6C5231e8c15Feda1294143d48574325B`](https://sepolia.etherscan.io/address/0xb452901e6C5231e8c15Feda1294143d48574325B) |
 | **Frontend** | Run locally (`npm run web:dev`) or deploy `packages/web` to Vercel |
-| **Docs** | `/how-it-works/overview` in the web app |
+| **Explore** | `/explore` — pools, tier trends, and event-discovered community categories |
+| **Docs** | `/how-it-works/overview` — full in-app guide (10 sections) |
 
 ---
 
@@ -154,15 +159,21 @@ FheSalary/
 │   │   ├── contracts/
 │   │   │   ├── SalaryFHE.sol          # Main FHEVM contract
 │   │   │   └── lib/Categories.sol     # Category dimensions + k threshold
-│   │   ├── test/SalaryFHE.test.ts     # 12 Hardhat + mock FHE tests
-│   │   ├── scripts/deploy.ts         # Deploy + ABI sync + .env.local update
+│   │   ├── test/SalaryFHE.test.ts     # Hardhat + mock FHE tests
+│   │   ├── scripts/
+│   │   │   ├── deploy.ts              # Deploy + ABI sync + .env.local update
+│   │   │   ├── seed-data.ts           # Demo category labels + salary spreads
+│   │   │   └── seed-categories.ts     # Sepolia seed runner (10×10 wallets)
 │   │   └── deployments/sepolia.json
 │   └── web/
 │       ├── src/
-│       │   ├── app/                   # Next.js routes (/, /app, /company, /how-it-works/*)
-│       │   ├── components/            # UI + docs sidebar
-│       │   ├── hooks/                 # useSalaryFhe, useCompanyFhe, useFhevmInstance
-│       │   └── abi/                   # Generated ABI + deployment metadata
+│       │   ├── app/                   # Next.js routes (/, /app, /company, /explore, /how-it-works/*)
+│       │   ├── components/            # UI, docs sidebar, Explore cards, SVG icons
+│       │   ├── context/               # FhevmProvider (SDK preload on boot)
+│       │   ├── data/                  # seed-manifest.json (demo pool metadata)
+│       │   ├── hooks/                 # useSalaryFhe, useCompanyFhe, useExplorePools, useDiscoveredCategoryIds
+│       │   ├── lib/                   # contract, categories, category-registry, seed-manifest, how-it-works-content
+│       │   └── abi/                   # Generated ABI + deployment.json (address fallback)
 │       └── public/                    # Logo assets
 ├── .env.example
 └── package.json                       # npm workspaces root
@@ -219,9 +230,11 @@ Open [http://localhost:3000](http://localhost:3000), connect a Sepolia wallet, a
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `NEXT_PUBLIC_SALARY_FHE_ADDRESS` | Yes | Deployed `SalaryFHE` address |
+| `NEXT_PUBLIC_SALARY_FHE_ADDRESS` | No* | Deployed `SalaryFHE` address |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | No | Enables WalletConnect in RainbowKit |
 | `NEXT_PUBLIC_SEPOLIA_RPC_URL` | No | Custom Sepolia RPC (defaults to public node) |
+
+\* If unset, the frontend falls back to `packages/web/src/abi/deployment.json` (synced on deploy). Vercel builds work without setting the env var when that file is committed.
 
 The deploy script automatically updates `NEXT_PUBLIC_SALARY_FHE_ADDRESS` in `.env.local` after a successful Sepolia deploy.
 
@@ -325,6 +338,34 @@ Category labels and salary spreads live in `packages/contracts/scripts/seed-data
 
 ---
 
+## Explore (`/explore`)
+
+The Explore page surfaces pool activity without a backend:
+
+| View | What it shows |
+|------|----------------|
+| **Pools** | Heat badges (live / warming / empty), participant counts, published tier averages, fill progress |
+| **Trends** | Tier-to-tier delta (e.g. avg at 5 vs 10 participants) with a sparkline chart |
+
+**Data sources (merged in the browser):**
+
+1. **`seed-manifest.json`** — curated demo categories (always listed, even at 0 participants).
+2. **Event logs** — `SalarySubmitted` and `CompanySalarySubmitted` scanned via `getLogs`; any active category appears as a **Community** pool (participants > 0 only).
+3. **Live reads** — `getBucketCount`, `isTierFinalized`, `getClearAverage` override manifest fallbacks when RPC is connected.
+
+Event discovery refetches about every 60 seconds. Labels for discovered categories are resolved from the full position × city × seniority registry (`category-registry.ts`).
+
+---
+
+## Frontend notes
+
+- **FHE SDK preload** — `FhevmProvider` warms the relayer SDK chunk at app boot so the first encrypt/submit is faster.
+- **Contract address** — env var first, then `deployment.json` (see [Environment variables](#environment-variables)).
+- **Docs pages** — static how-it-works routes use plain links (no RainbowKit vendor chunk on doc SSR).
+- **COOP** — FHE WASM needs `Cross-Origin-Opener-Policy: same-origin` (`next.config.ts`). Coinbase Wallet is excluded due to COOP conflict.
+
+---
+
 ## User flows
 
 ### Individuals (`/app`)
@@ -343,20 +384,30 @@ Category labels and salary spreads live in `packages/contracts/scripts/seed-data
 3. After ≥ 5 employees in a category and market average ready: **Benchmark privately**.
 4. Decrypt single bit: paying above or at/below market.
 
+### Explore (`/explore`)
+
+1. Open **Explore** from the nav or landing page.
+2. **Pools** tab — filter by live / warming / empty; demo pools show `X/10` slots, community pools show raw participant count.
+3. **Trends** tab — categories with both tier-5 and tier-10 published averages, sorted by largest % move.
+4. Click **View pool** to jump to `/app` with that category pre-selected.
+
 ---
 
 ## Documentation
 
-In-app docs (GitBook-style sidebar):
+In-app docs (sidebar with section anchors):
 
 | Page | Route |
 |------|-------|
 | Overview | `/how-it-works/overview` |
+| Architecture | `/how-it-works/architecture` |
 | Core concepts | `/how-it-works/concepts` |
 | Individual flow | `/how-it-works/individual-flow` |
-| Public average release | `/how-it-works/public-release` |
+| Public tier release | `/how-it-works/public-release` |
 | Company flow | `/how-it-works/company-flow` |
 | Privacy model | `/how-it-works/privacy` |
+| Trust & verification | `/how-it-works/trust` |
+| Explore & trends | `/how-it-works/explore` |
 | FAQ | `/how-it-works/faq` |
 
 External references:
@@ -375,6 +426,7 @@ External references:
 - **Tier snapshots** — public averages are historical cohort snapshots, not real-time leaks.
 - **Browser requirements** — FHE WASM needs `Cross-Origin-Opener-Policy: same-origin` (configured in `next.config.ts`). Coinbase Wallet is excluded due to COOP conflict.
 - **Relayer dependency** — encryption/decryption requires Zama relayer availability.
+- **Explore RPC load** — event scan + per-pool contract reads can be heavy on public Sepolia RPC; use a dedicated RPC for production demos.
 
 Report issues responsibly via GitHub Issues.
 
@@ -382,8 +434,9 @@ Report issues responsibly via GitHub Issues.
 
 ## Roadmap
 
-- [ ] Category explorer (active pools, almost-there categories)
-- [ ] Tier history charts from on-chain events
+- [x] Category explorer (active pools, community discovery via events)
+- [x] Tier history charts from on-chain reads
+- [ ] Dedicated Trust UI strip on `/app` and Explore
 - [ ] Percentile bands (encrypted range comparison)
 - [ ] Mainnet deployment
 - [ ] Multi-language UI (EN / TR)

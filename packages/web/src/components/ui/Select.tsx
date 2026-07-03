@@ -1,16 +1,19 @@
+import type { IconName } from "@/components/icons/Icon";
+import { Icon } from "@/components/icons/Icon";
+
 interface SelectProps {
   label: string;
   value: number;
   options: readonly string[];
   onChange: (value: number) => void;
-  icon?: string;
+  icon?: IconName;
 }
 
 export function Select({ label, value, options, onChange, icon }: SelectProps) {
   return (
     <label className="block">
       <span className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted">
-        {icon && <span>{icon}</span>}
+        {icon && <Icon name={icon} size={14} className="text-green-deep" />}
         {label}
       </span>
       <div className="relative">

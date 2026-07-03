@@ -35,11 +35,18 @@ export function ExplorePoolCard({ pool }: ExplorePoolCardProps) {
     <Card glow={pool.heat === "live" ? "emerald" : pool.heat === "warming" ? "cyan" : "violet"}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <span
-            className={`inline-flex rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${styles.badge}`}
-          >
-            {poolHeatLabel(pool.heat)}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={`inline-flex rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${styles.badge}`}
+            >
+              {poolHeatLabel(pool.heat)}
+            </span>
+            {pool.isCommunity && (
+              <span className="inline-flex rounded-full border border-sky-500/25 bg-sky-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-800">
+                Community
+              </span>
+            )}
+          </div>
           <h3 className="mt-2 text-base font-bold leading-snug text-ink">{entry.label}</h3>
         </div>
         {pool.latestPublishedAverage != null && (
@@ -71,7 +78,9 @@ export function ExplorePoolCard({ pool }: ExplorePoolCardProps) {
         <div className="mb-1.5 flex items-center justify-between text-[11px] font-semibold text-muted">
           <span>Pool fill</span>
           <span>
-            {pool.participants}/10 demo slots
+            {pool.isCommunity
+              ? `${pool.participants} participants`
+              : `${pool.participants}/10 demo slots`}
           </span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-green/10">

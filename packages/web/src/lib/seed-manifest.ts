@@ -122,3 +122,24 @@ export function tierSnapshotsFromEntry(
     { tier: 10, averageUsd: t10 },
   ]);
 }
+
+export function entryFromCategoryRef(ref: {
+  label: string;
+  positionId: number;
+  cityId: number;
+  seniorityId: number;
+  categoryId: string;
+}): SeedCategoryEntry {
+  return {
+    label: ref.label,
+    positionId: ref.positionId,
+    cityId: ref.cityId,
+    seniorityId: ref.seniorityId,
+    categoryId: ref.categoryId,
+    salariesUsd: [],
+    expectedAverageUsd: 0,
+    participantCount: 0,
+    tier5AverageUsd: null,
+    tier10AverageUsd: null,
+  };
+}

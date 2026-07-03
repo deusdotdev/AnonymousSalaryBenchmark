@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ProgressRing } from "@/components/ui/ProgressRing";
+import { IconBadge } from "@/components/icons/IconBadge";
 import { CITIES, MIN_PARTICIPANTS, POSITIONS, SENIORITY_LEVELS } from "@/lib/categories";
 
 interface StatsCardProps {
@@ -48,9 +49,7 @@ export function StatsCard({
   return (
     <Card glow="cyan">
       <div className="mb-5 flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-leaf to-green-deep text-lg">
-          &#128202;
-        </span>
+        <IconBadge name="chart" className="shrink-0" />
         <div>
           <h2 className="text-lg font-bold text-ink">Category insights</h2>
           <p className="text-xs text-muted">

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { MoneyInput } from "@/components/ui/MoneyInput";
 import { ProgressRing } from "@/components/ui/ProgressRing";
+import { IconBadge } from "@/components/icons/IconBadge";
 import { useCompanyFhe } from "@/hooks/useCompanyFhe";
 import { CITIES, MIN_PARTICIPANTS, POSITIONS, SENIORITY_LEVELS } from "@/lib/categories";
 
@@ -48,9 +49,7 @@ export default function CompanyPage() {
         {/* Add employee salaries */}
         <Card glow="violet">
           <div className="mb-5 flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-green to-green-deep text-lg">
-              &#127970;
-            </span>
+            <IconBadge name="company" className="shrink-0" />
             <div>
               <h2 className="text-lg font-bold text-ink">Add employee salaries</h2>
               <p className="text-xs text-muted">Encrypted locally &middot; one entry per employee</p>
@@ -60,16 +59,16 @@ export default function CompanyPage() {
           <div className="grid gap-4">
             <Select
               label="Position"
-              icon="&#128188;"
+              icon="briefcase"
               value={position}
               options={POSITIONS}
               onChange={setPosition}
             />
             <div className="grid gap-4 sm:grid-cols-2">
-              <Select label="City" icon="&#127961;" value={city} options={CITIES} onChange={setCity} />
+              <Select label="City" icon="building" value={city} options={CITIES} onChange={setCity} />
               <Select
                 label="Seniority"
-                icon="&#9203;"
+                icon="clock"
                 value={experience}
                 options={SENIORITY_LEVELS}
                 onChange={setExperience}
@@ -98,9 +97,7 @@ export default function CompanyPage() {
         {/* Benchmark */}
         <Card glow="cyan">
           <div className="mb-5 flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-leaf to-green-deep text-lg">
-              &#128202;
-            </span>
+            <IconBadge name="chart" className="shrink-0" />
             <div>
               <h2 className="text-lg font-bold text-ink">Company benchmark</h2>
               <p className="text-xs text-muted">Unlocks at {MIN_PARTICIPANTS} employees</p>

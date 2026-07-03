@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { IconBadge } from "@/components/icons/IconBadge";
+import type { IconName } from "@/components/icons/Icon";
 
 type Variant = "nav" | "primary";
 
@@ -13,16 +15,21 @@ interface LaunchMenuProps {
 
 const MENU_WIDTH = 288;
 
-const OPTIONS = [
+const OPTIONS: {
+  href: string;
+  icon: IconName;
+  title: string;
+  subtitle: string;
+}[] = [
   {
     href: "/app",
-    icon: "\u{1F464}",
+    icon: "user",
     title: "For individuals",
     subtitle: "Submit your salary & compare privately",
   },
   {
     href: "/company",
-    icon: "\u{1F3E2}",
+    icon: "company",
     title: "For companies",
     subtitle: "Benchmark your team against the market",
   },
@@ -104,9 +111,7 @@ export function LaunchMenu({ variant = "nav", label = "Launch app" }: LaunchMenu
             onClick={() => setOpen(false)}
             className="flex items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-green/5"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-deep text-lg">
-              {opt.icon}
-            </span>
+              <IconBadge name={opt.icon} size="sm" className="shrink-0" />
             <span>
               <span className="block text-sm font-bold text-ink">{opt.title}</span>
               <span className="block text-xs text-muted">{opt.subtitle}</span>

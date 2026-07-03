@@ -43,7 +43,7 @@ export function ExplorePageContent() {
     view === "pools"
       ? {
           title: "Which pools are live?",
-          body: "See where confidential salary data is already flowing. Pick a category with enough participants before you submit.",
+          body: "See where confidential salary data is already flowing — demo pools plus any category with on-chain submissions.",
         }
       : {
           title: "How are averages moving?",
@@ -67,16 +67,16 @@ export function ExplorePageContent() {
         <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {(view === "pools"
             ? [
-                { label: "Demo pools", value: summary.total },
+                { label: "All pools", value: summary.total },
+                { label: "Community", value: summary.community },
                 { label: "Live (k≥5)", value: summary.live },
                 { label: "Published avg", value: summary.published },
-                { label: "Warming", value: summary.warming },
               ]
             : [
                 { label: "With tier history", value: summary.withTrend },
                 { label: "Trending up", value: summary.rising },
-                { label: "Published tiers", value: summary.published },
-                { label: "Demo pools", value: summary.total },
+                { label: "Community pools", value: summary.community },
+                { label: "All pools", value: summary.total },
               ]
           ).map((stat) => (
             <div
@@ -127,7 +127,7 @@ export function ExplorePageContent() {
           )}
 
           {isLoading && (
-            <p className="text-xs font-medium text-muted">Syncing from Sepolia…</p>
+            <p className="text-xs font-medium text-muted">Syncing events &amp; Sepolia reads…</p>
           )}
         </div>
 
