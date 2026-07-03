@@ -1,9 +1,22 @@
 import type { Abi } from "viem";
+import deployment from "@/abi/deployment.json";
 
-/* Deploy with: cd packages/contracts && npm run deploy:sepolia */
-export const CONTRACT_ADDRESS =
-  (process.env.NEXT_PUBLIC_SALARY_FHE_ADDRESS as `0x${string}` | undefined) ??
-  "0x0000000000000000000000000000000000000000";
+const ZERO = "0x0000000000000000000000000000000000000000" as const;
+
+function resolveContractAddress(): `0x${string}` {
+  const fromEnv = process.env.NEXT_PUBLIC_SALARY_FHE_ADDRESS;
+  if (fromEnv && fromEnv !== ZERO) {
+    return fromEnv as `0x${string}`;
+  }
+  const fromDeployment = deployment.address;
+  if (fromDeployment && fromDeployment !== ZERO) {
+    return fromDeployment as `0x${string}`;
+  }
+  return ZERO;
+}
+
+/* Override via NEXT_PUBLIC_SALARY_FHE_ADDRESS; else packages/web/src/abi/deployment.json */
+export const CONTRACT_ADDRESS = resolveContractAddress();
 
 export const salaryFheAbi = [
   {
