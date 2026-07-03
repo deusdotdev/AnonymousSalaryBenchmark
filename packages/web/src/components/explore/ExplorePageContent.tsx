@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { PageContainer } from "@/components/PageContainer";
 import { ExplorePoolCard } from "@/components/explore/ExplorePoolCard";
 import { ExploreTrendCard } from "@/components/explore/ExploreTrendCard";
@@ -26,8 +25,7 @@ const FILTERS: { id: Filter; label: string }[] = [
 export function ExplorePageContent() {
   const [view, setView] = useState<View>("pools");
   const [filter, setFilter] = useState<Filter>("all");
-  const { pools, summary, seededAt, network, contractAddress, contractConfigured, isLoading } =
-    useExplorePools();
+  const { pools, summary, isLoading } = useExplorePools();
 
   const visible = useMemo(() => {
     const base = filter === "all" ? pools : pools.filter((p) => p.heat === filter);
@@ -154,41 +152,6 @@ export function ExplorePageContent() {
         {visible.length === 0 && (
           <p className="mt-10 text-center text-sm text-muted">No pools match this filter.</p>
         )}
-
-        <section className="mt-10 rounded-2xl border border-green/10 bg-green/[0.03] px-5 py-4 text-sm text-muted">
-          <p>
-            Tier trends use immutable on-chain snapshots at k={5}, {10}, {15}… participants. Live
-            private comparisons still use the encrypted pool average, not these public tiers.
-          </p>
-          <p className="mt-2">
-            Demo data on <span className="font-semibold text-ink">{network}</span>
-            {seededAt ? (
-              <>
-                {" "}
-                · synced{" "}
-                <time dateTime={seededAt}>{new Date(seededAt).toLocaleDateString()}</time>
-              </>
-            ) : null}
-            .{" "}
-            {contractConfigured ? (
-              <>
-                <a
-                  href={`https://sepolia.etherscan.io/address/${contractAddress}`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="font-semibold text-green-deep underline decoration-green/30 underline-offset-2"
-                >
-                  Etherscan
-                </a>
-              </>
-            ) : null}
-          </p>
-          <p className="mt-2">
-            <Link href="/app" className="font-semibold text-green-deep hover:underline">
-              Submit or compare in the app →
-            </Link>
-          </p>
-        </section>
       </PageContainer>
     </main>
   );
