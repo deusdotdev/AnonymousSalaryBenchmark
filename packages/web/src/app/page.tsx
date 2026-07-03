@@ -27,9 +27,11 @@ export default function LandingPage() {
     <main className="w-full py-14 sm:py-20">
       <PageContainer>
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-[2rem] border border-green/15 bg-gradient-to-br from-white/90 via-green/5 to-mint/10 px-6 py-14 sm:px-10 sm:py-16 lg:px-14">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-green-soft/30 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-mint/25 blur-3xl" />
+      <section className="relative rounded-[2rem] border border-green/15 bg-gradient-to-br from-white/90 via-green/5 to-mint/10 px-6 py-14 sm:px-10 sm:py-16 lg:px-14">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[2rem]">
+          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-green-soft/30 blur-3xl" />
+          <div className="absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-mint/25 blur-3xl" />
+        </div>
         <div className="relative flex flex-col items-center text-center">
         <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-green/20 bg-white/70 px-3 py-1 text-xs font-semibold text-muted">
           <span className="h-2 w-2 animate-pulse-glow rounded-full bg-green" />
@@ -139,7 +141,7 @@ export default function LandingPage() {
 
       {/* Final CTA */}
       <section className="mt-24">
-        <div className="relative overflow-hidden rounded-3xl border border-green/20 bg-gradient-to-br from-green-soft/20 via-mint/10 to-surface p-10 text-center">
+        <div className="relative rounded-3xl border border-green/20 bg-gradient-to-br from-green-soft/20 via-mint/10 to-surface p-10 text-center">
           <h2 className="text-3xl font-black text-ink sm:text-4xl">
             Ready to benchmark, privately?
           </h2>
