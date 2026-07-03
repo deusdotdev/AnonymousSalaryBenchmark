@@ -16,6 +16,7 @@ interface SubmitCardProps {
   setExperience: (v: number) => void;
   isConnected: boolean;
   sdkReady: boolean;
+  sdkLoading: boolean;
   hasSubmitted: boolean;
   contractConfigured: boolean;
   working: boolean;
@@ -31,6 +32,7 @@ export function SubmitCard({
   setExperience,
   isConnected,
   sdkReady,
+  sdkLoading,
   hasSubmitted,
   contractConfigured,
   working,
@@ -39,9 +41,17 @@ export function SubmitCard({
   const [salary, setSalary] = useState("85000");
 
   const disabled =
-    !isConnected || !sdkReady || hasSubmitted || !contractConfigured || working;
+    !isConnected || sdkLoading || !sdkReady || hasSubmitted || !contractConfigured || working;
 
   const validSalary = Number(salary) > 0;
+
+  const buttonLabel = hasSubmitted
+    ? "Already submitted from this wallet"
+    : sdkLoading
+      ? "Preparing encryption…"
+      : !sdkReady && isConnected
+        ? "Encryption engine loading…"
+        : "Encrypt & submit";
 
   return (
     <Card glow="violet">
@@ -79,12 +89,17 @@ export function SubmitCard({
       <div className="mt-6">
         <Button
           variant="primary"
-          loading={working}
+          loading={working || (sdkLoading && isConnected)}
           disabled={disabled || !validSalary}
           onClick={() => onSubmit(salary)}
         >
-          {hasSubmitted ? "Already submitted from this wallet" : "Encrypt & submit"}
+          {buttonLabel}
         </Button>
+        {isConnected && sdkLoading && (
+          <p className="mt-3 text-center text-xs text-muted">
+            First load downloads FHE modules (~5s). Later submits are faster.
+          </p>
+        )}
         {!isConnected && (
           <p className="mt-3 text-center text-xs text-muted">
             Connect your wallet to encrypt and submit.

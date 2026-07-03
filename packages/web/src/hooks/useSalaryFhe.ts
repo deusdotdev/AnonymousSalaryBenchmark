@@ -36,7 +36,7 @@ export function useSalaryFhe(position: number, city: number, experience: number)
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const { writeContractAsync } = useWriteContract();
-  const { instance, error: fheError } = useFhevmInstance();
+  const { instance, error: fheError, loading: sdkLoading } = useFhevmInstance();
 
   const [status, setStatus] = useState<SalaryStatus>({ phase: "idle" });
   const [comparison, setComparison] = useState<boolean | undefined>();
@@ -305,6 +305,7 @@ export function useSalaryFhe(position: number, city: number, experience: number)
     isConnected,
     contractConfigured,
     sdkReady,
+    sdkLoading,
     fheError,
     status,
     comparison,

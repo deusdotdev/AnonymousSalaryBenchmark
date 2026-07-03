@@ -55,6 +55,7 @@ function AppPageInner() {
           setExperience={setExperience}
           isConnected={fhe.isConnected}
           sdkReady={fhe.sdkReady}
+          sdkLoading={fhe.sdkLoading}
           hasSubmitted={fhe.hasSubmitted}
           contractConfigured={fhe.contractConfigured}
           working={working}

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { wagmiConfig } from "@/lib/wagmi";
+import { FhevmProvider } from "@/context/FhevmProvider";
 import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient();
@@ -31,7 +32,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             borderRadius: "large",
           })}
         >
-          {children}
+          <FhevmProvider>{children}</FhevmProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
