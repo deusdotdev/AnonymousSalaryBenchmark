@@ -44,6 +44,7 @@ packages/contracts/ignition/deployments/
 
 # Local deploy JSON (contract address is in README + packages/web/src/abi/deployment.json)
 packages/contracts/deployments/
+packages/contracts/.seed.lock
 
 # --- Test / coverage ---
 coverage/

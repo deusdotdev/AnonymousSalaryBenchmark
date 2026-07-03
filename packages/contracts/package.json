@@ -6,6 +6,9 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+    "seed:sepolia": "hardhat run scripts/seed-categories.ts --network sepolia",
+    "seed:tiers": "SEED_TIERS_ONLY=true hardhat run scripts/seed-categories.ts --network sepolia",
+    "seed:one": "hardhat run scripts/seed-one-wallet.ts --network sepolia",
     "clean": "hardhat clean"
   },
   "devDependencies": {

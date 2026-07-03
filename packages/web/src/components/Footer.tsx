@@ -7,6 +7,7 @@ import { PageContainer } from "@/components/PageContainer";
 const X_PROFILE_URL = "https://x.com/ex_machinam";
 
 const PRODUCT_LINKS = [
+  { label: "Explore pools", href: "/explore" },
   { label: "Submit salary", href: "/app" },
   { label: "For companies", href: "/company" },
   { label: "How it works", href: "/how-it-works/overview" },

@@ -302,6 +302,27 @@ cd packages/contracts
 npx hardhat verify --network sepolia <CONTRACT_ADDRESS>
 ```
 
+### Seed demo data (optional)
+
+Populates **10 categories × 10 wallets** on Sepolia for Explore / dashboard demos. Wallets are derived deterministically from `PRIVATE_KEY` (indices 0–99); each wallet submits once in its category.
+
+**Requirements:** deployer needs roughly **1.85 Sepolia ETH** (FHE `submitSalary` txs are gas-heavy). Default **8 parallel** submissions (`SEED_CONCURRENCY=8`); increase cautiously if the RPC/relayer rate-limits.
+
+```bash
+# From repo root
+npm run seed:sepolia -w @fhesalary/contracts
+```
+
+The script:
+
+1. Derives 100 child wallets from `.env` `PRIVATE_KEY`
+2. Funds each wallet (~0.018 ETH)
+3. Encrypts salaries via `@zama-fhe/relayer-sdk/node` and calls `submitSalary`
+4. Publishes tier-5 and tier-10 public averages per category
+5. Writes `packages/web/src/data/seed-manifest.json` for the frontend
+
+Category labels and salary spreads live in `packages/contracts/scripts/seed-data.ts`. Re-runs skip wallets that already submitted.
+
 ---
 
 ## User flows

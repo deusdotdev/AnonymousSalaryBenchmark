@@ -8,6 +8,7 @@ import { LaunchMenu } from "@/components/LaunchMenu";
 import { PageContainer } from "@/components/PageContainer";
 
 const NAV_LINKS = [
+  { label: "Explore", href: "/explore" },
   { label: "How it works", href: "/how-it-works/overview" },
 ];
 
@@ -25,7 +26,7 @@ export function Navbar() {
               const active =
                 link.href === "/how-it-works/overview"
                   ? pathname.startsWith("/how-it-works")
-                  : pathname === link.href;
+                  : pathname === link.href || pathname.startsWith(`${link.href}/`);
               return (
                 <Link
                   key={link.href}
