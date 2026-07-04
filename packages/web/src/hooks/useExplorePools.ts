@@ -8,12 +8,11 @@ import {
   type SeedCategoryEntry,
   entryFromCategoryRef,
   fillPercent,
-  poolHeat,
+  isPoolLive,
   poolStatusMessage,
   appCategoryHref,
   buildTierTrend,
   tierSnapshotsFromEntry,
-  type PoolHeat,
   type TierSnapshot,
   type TierTrend,
 } from "@/lib/seed-manifest";
@@ -30,12 +29,11 @@ export interface ExplorePool {
   latestPublishedAverage: number | null;
   tierSnapshots: TierSnapshot[];
   trend: TierTrend | null;
-  heat: PoolHeat;
+  isLive: boolean;
   fillPercent: number;
   statusMessage: string;
   appHref: string;
   liveSynced: boolean;
-  isCommunity: boolean;
 }
 
 function parseTierAverage(
@@ -136,7 +134,6 @@ export function useExplorePools() {
   const pools: ExplorePool[] = useMemo(() => {
     return catalogEntries
       .map((entry, index) => {
-        const isCommunity = !manifestIdSet.has(entry.categoryId);
         const onChainCount = countResults?.[index]?.result;
         const participants =
           onChainCount !== undefined ? Number(onChainCount) : entry.participantCount;
@@ -159,7 +156,6 @@ export function useExplorePools() {
           tier10: tier10Average,
         });
         const trend = buildTierTrend(tierSnapshots);
-        const heat = poolHeat(participants);
 
         return {
           entry,
@@ -169,26 +165,24 @@ export function useExplorePools() {
           latestPublishedAverage,
           tierSnapshots,
           trend,
-          heat,
+          isLive: isPoolLive(participants),
           fillPercent: fillPercent(participants),
           statusMessage: poolStatusMessage(participants, tier10Average, tier5Average),
           appHref: appCategoryHref(entry.positionId, entry.cityId, entry.seniorityId),
           liveSynced: onChainCount !== undefined,
-          isCommunity,
         };
       })
-      .filter((pool) => !pool.isCommunity || pool.participants > 0);
+      .filter(
+        (pool) => manifestIdSet.has(pool.entry.categoryId) || pool.participants > 0
+      );
   }, [catalogEntries, countResults, tierResults, manifestIdSet]);
 
   const summary = useMemo(() => {
-    const live = pools.filter((p) => p.heat === "live").length;
-    const warming = pools.filter((p) => p.heat === "warming").length;
+    const live = pools.filter((p) => p.isLive).length;
     const published = pools.filter((p) => p.latestPublishedAverage != null).length;
     const withTrend = pools.filter((p) => p.trend != null).length;
     const rising = pools.filter((p) => p.trend?.direction === "up").length;
-    const community = pools.filter((p) => p.isCommunity).length;
-    const demo = pools.filter((p) => !p.isCommunity).length;
-    return { total: pools.length, live, warming, published, withTrend, rising, community, demo };
+    return { total: pools.length, live, published, withTrend, rising };
   }, [pools]);
 
   return {

@@ -24,18 +24,8 @@ export interface SeedManifest {
 
 export const SEED_MANIFEST = rawManifest as SeedManifest;
 
-export type PoolHeat = "live" | "warming" | "empty";
-
-export function poolHeat(participants: number): PoolHeat {
-  if (participants >= MIN_PARTICIPANTS) return "live";
-  if (participants > 0) return "warming";
-  return "empty";
-}
-
-export function poolHeatLabel(heat: PoolHeat): string {
-  if (heat === "live") return "Live pool";
-  if (heat === "warming") return "Warming up";
-  return "Empty";
+export function isPoolLive(participants: number): boolean {
+  return participants >= MIN_PARTICIPANTS;
 }
 
 /** Human-readable pool status for Explore cards. */

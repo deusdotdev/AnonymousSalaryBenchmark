@@ -14,14 +14,7 @@ export function ExploreTrendCard({ pool }: ExploreTrendCardProps) {
     <Card glow="cyan">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted">Tier trend</p>
-            {pool.isCommunity && (
-              <span className="rounded-full border border-sky-500/25 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase text-sky-800">
-                Community
-              </span>
-            )}
-          </div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted">Tier trend</p>
           <h3 className="mt-1 text-base font-bold text-ink">{entry.label}</h3>
         </div>
         {trend && (

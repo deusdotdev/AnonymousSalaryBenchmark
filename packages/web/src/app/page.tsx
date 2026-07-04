@@ -112,7 +112,7 @@ export default function LandingPage() {
       <section className="mt-24">
         <div className="relative grid items-center gap-8 overflow-hidden rounded-[2rem] border border-green/20 bg-gradient-to-br from-surface via-green-soft/10 to-mint/15 p-8 md:grid-cols-2 md:p-12 lg:p-14">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-green/20 bg-green/5 px-3 py-1 text-xs font-semibold text-green-deep">
+            <span className="inline-flex items-center gap-2 rounded-full border border-green/15 bg-white/70 px-3 py-1 text-xs font-semibold text-muted">
               For employers
             </span>
             <h2 className="mt-4 text-3xl font-black text-ink sm:text-4xl">
@@ -131,20 +131,37 @@ export default function LandingPage() {
               Benchmark your company &rarr;
             </Link>
           </div>
-          <div className="grid gap-4">
-            {[
-              { k: "Per-employee", v: "Encrypted euint64 salaries aggregated privately" },
-              { k: "k-anonymity \u2265 5", v: "No benchmark until five employees are in a category" },
-              { k: "1 private bit", v: "Above or below market, decryptable only by you" },
-            ].map((row) => (
+          <div className="grid gap-3">
+            {(
+              [
+                {
+                  icon: "lock" as const,
+                  title: "Per-employee",
+                  body: "Encrypted euint64 salaries aggregated privately",
+                },
+                {
+                  icon: "users" as const,
+                  title: `k-anonymity \u2265 ${MIN_PARTICIPANTS}`,
+                  body: "No benchmark until five employees are in a category",
+                },
+                {
+                  icon: "shield" as const,
+                  title: "1 private bit",
+                  body: "Above or below market, decryptable only by you",
+                },
+              ] as const
+            ).map((row) => (
               <div
-                key={row.k}
-                className="flex items-center gap-4 rounded-2xl border border-green/10 bg-surface p-4"
+                key={row.title}
+                className="flex gap-3.5 rounded-2xl border border-green/10 bg-white/80 p-4 shadow-sm"
               >
-                <span className="rounded-xl bg-gradient-to-br from-green to-green-deep px-3 py-2 text-xs font-bold text-white">
-                  {row.k}
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-green/10 bg-green/[0.04]">
+                  <Icon name={row.icon} size={18} className="text-green-deep" />
                 </span>
-                <span className="text-sm text-muted">{row.v}</span>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-ink">{row.title}</p>
+                  <p className="mt-0.5 text-sm leading-relaxed text-muted">{row.body}</p>
+                </div>
               </div>
             ))}
           </div>

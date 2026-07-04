@@ -2,52 +2,27 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { TierTrendVisual } from "@/components/explore/TierTrendVisual";
 import { CITIES, POSITIONS, SENIORITY_LEVELS } from "@/lib/categories";
-import { poolHeatLabel } from "@/lib/seed-manifest";
 import type { ExplorePool } from "@/hooks/useExplorePools";
-
-const HEAT_STYLES = {
-  live: {
-    badge: "border-green/30 bg-green/10 text-green-deep",
-    bar: "bg-gradient-to-r from-green to-green-deep",
-    ring: "ring-green/20",
-  },
-  warming: {
-    badge: "border-amber-500/30 bg-amber-500/10 text-amber-700",
-    bar: "bg-gradient-to-r from-amber-400 to-amber-600",
-    ring: "ring-amber-500/20",
-  },
-  empty: {
-    badge: "border-slate-200 bg-slate-50 text-slate-500",
-    bar: "bg-slate-200",
-    ring: "ring-slate-200",
-  },
-} as const;
 
 interface ExplorePoolCardProps {
   pool: ExplorePool;
 }
 
 export function ExplorePoolCard({ pool }: ExplorePoolCardProps) {
-  const styles = HEAT_STYLES[pool.heat];
   const { entry } = pool;
 
   return (
-    <Card glow={pool.heat === "live" ? "emerald" : pool.heat === "warming" ? "cyan" : "violet"}>
+    <Card glow={pool.isLive ? "emerald" : "violet"}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={`inline-flex rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${styles.badge}`}
-            >
-              {poolHeatLabel(pool.heat)}
+          {pool.isLive && (
+            <span className="inline-flex rounded-full border border-green/30 bg-green/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-deep">
+              Live pool
             </span>
-            {pool.isCommunity && (
-              <span className="inline-flex rounded-full border border-sky-500/25 bg-sky-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-800">
-                Community
-              </span>
-            )}
-          </div>
-          <h3 className="mt-2 text-base font-bold leading-snug text-ink">{entry.label}</h3>
+          )}
+          <h3 className={`text-base font-bold leading-snug text-ink ${pool.isLive ? "mt-2" : ""}`}>
+            {entry.label}
+          </h3>
         </div>
         {pool.latestPublishedAverage != null && (
           <div className="text-right">
@@ -74,18 +49,20 @@ export function ExplorePoolCard({ pool }: ExplorePoolCardProps) {
 
       <p className="mt-4 text-sm leading-relaxed text-muted">{pool.statusMessage}</p>
 
-      <div className={`mt-4 rounded-2xl p-3 ring-1 ${styles.ring}`}>
+      <div
+        className={`mt-4 rounded-2xl p-3 ring-1 ${pool.isLive ? "ring-green/20" : "ring-slate-200"}`}
+      >
         <div className="mb-1.5 flex items-center justify-between text-[11px] font-semibold text-muted">
           <span>Pool fill</span>
-          <span>
-            {pool.isCommunity
-              ? `${pool.participants} participants`
-              : `${pool.participants}/10 demo slots`}
-          </span>
+          <span>{pool.participants} participants</span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-green/10">
           <div
-            className={`h-full rounded-full transition-all ${styles.bar}`}
+            className={`h-full rounded-full transition-all ${
+              pool.isLive
+                ? "bg-gradient-to-r from-green to-green-deep"
+                : "bg-slate-200"
+            }`}
             style={{ width: `${pool.fillPercent}%` }}
           />
         </div>

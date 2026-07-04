@@ -758,7 +758,7 @@ FHE.checkSignatures(cts, abi.encode(clearAverage), decryptionProof);`,
           [
             "SalarySubmitted / CompanySalarySubmitted logs",
             "Any categoryId with on-chain activity",
-            "Merged into Explore as Community pools",
+            "Merged into Explore when participants > 0",
           ],
           [
             "Live contract reads",
@@ -774,12 +774,9 @@ FHE.checkSignatures(cts, abi.encode(clearAverage), decryptionProof);`,
       {
         type: "ul",
         items: [
-          "Demo — seeded categories from the manifest (shows 0–10 slot progress).",
-          "Community — discovered from events; only shown when participants > 0.",
-          "Live — participants ≥ 5 in that category.",
-          "Warming — 1–4 participants, average not yet meaningful.",
-          "Empty — demo pool with no submissions yet.",
-          "Heat badge + fill bar show progress toward the next tier milestone.",
+          "Live badge when participants ≥ 5 (k-anonymity threshold met).",
+          "Participant count and fill bar on every pool card.",
+          "Published tier averages when tier-5 or tier-10 is finalized on-chain.",
         ],
       },
       {

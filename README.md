@@ -1,10 +1,17 @@
 # ASB — Anonymous Salary Benchmark
 
-**Confidential salary benchmarking on Zama FHEVM (Sepolia)**
+**Confidential salary benchmarking on Zama FHEVM (Ethereum Sepolia)**
 
 ASB lets individuals and companies compare compensation against market averages **without ever exposing clear-text salaries on-chain**. Salaries are encrypted in the browser, aggregated homomorphically in Solidity, and compared via private decryption — only the submitter learns their result.
 
 Built for the [Zama Developer Program — Builder Track](https://www.zama.org/post/zama-developer-program-mainnet-season-3-composable-privacy-is-the-key).
+
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.28-363636?logo=solidity&logoColor=white)](https://soliditylang.org/)
+[![Hardhat](https://img.shields.io/badge/Built%20with-Hardhat-FEC848?logo=ethereum&logoColor=black)](https://hardhat.org/)
+[![FHEVM](https://img.shields.io/badge/FHEVM-v0.11-1E40AF)](https://docs.zama.ai/fhevm)
+[![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Sepolia](https://img.shields.io/badge/Sepolia-11155111-6F4CFF?logo=ethereum&logoColor=white)](https://sepolia.etherscan.io/address/0xb452901e6C5231e8c15Feda1294143d48574325B)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ---
 
@@ -59,7 +66,7 @@ Use cases: individual market positioning, confidential payroll benchmarking for 
 | **Live private compare** | `FHE.gt(yourSalary, poolAverage)` — user-decryptable only by submitter |
 | **Company benchmarking** | Unlimited encrypted employee entries; private above/below market bit |
 | **Rich categories** | 35 roles × 55 cities × 6 seniority levels |
-| **Explore dashboard** | Live pool health, tier trends, and community pools discovered from on-chain events |
+| **Explore dashboard** | Live pool health, tier trends, and on-chain event discovery |
 | **Sepolia seed tooling** | One-command demo data: 10 categories × 10 wallets + tier publish + manifest sync |
 | **No backend** | Wallet + relayer + contract only; no salary database |
 
@@ -72,7 +79,7 @@ Use cases: individual market positioning, confidential payroll benchmarking for 
 | **Network** | Ethereum Sepolia (chain ID `11155111`) |
 | **Contract** | [`0xb452901e6C5231e8c15Feda1294143d48574325B`](https://sepolia.etherscan.io/address/0xb452901e6C5231e8c15Feda1294143d48574325B) |
 | **Frontend** | Run locally (`npm run web:dev`) or deploy `packages/web` to Vercel |
-| **Explore** | `/explore` — pools, tier trends, and event-discovered community categories |
+| **Explore** | `/explore` — pools, tier trends, and event-discovered categories |
 | **Docs** | `/how-it-works/overview` — full in-app guide (10 sections) |
 
 ---
@@ -142,11 +149,11 @@ flowchart TB
 | Layer | Technology |
 |-------|------------|
 | FHE contracts | Solidity `^0.8.28`, `@fhevm/solidity@0.11.1`, `ZamaEthereumConfig` |
-| Toolchain | Hardhat, `@fhevm/hardhat-plugin@0.4.2`, `@fhevm/mock-utils@0.4.2` |
+| Toolchain | Hardhat `^2.28`, `@fhevm/hardhat-plugin@0.4.2`, `@fhevm/mock-utils@0.4.2` |
 | Frontend | Next.js 15, React 19, Tailwind CSS 4 |
 | Wallet | wagmi, RainbowKit, viem |
 | Encryption | `@zama-fhe/relayer-sdk@0.4.1` (pinned) |
-| Network | Sepolia testnet |
+| Network | Ethereum Sepolia (`11155111`) |
 
 ---
 
@@ -195,8 +202,8 @@ FheSalary/
 
 ```bash
 # 1. Clone and install
-git clone <your-repo-url>
-cd FheSalary
+git clone https://github.com/deusdotdev/AnonymousSalaryBenchmark.git
+cd AnonymousSalaryBenchmark
 npm install
 
 # 2. Configure environment (see below)
@@ -213,6 +220,8 @@ npm run web:dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000), connect a Sepolia wallet, and navigate to **Launch app**.
+
+**Already deployed contract?** The web app falls back to `packages/web/src/abi/deployment.json` when `NEXT_PUBLIC_SALARY_FHE_ADDRESS` is unset — no extra env required for read-only Explore.
 
 ---
 
@@ -445,7 +454,7 @@ Report issues responsibly via GitHub Issues.
 
 ## License
 
-MIT — see [LICENSE](LICENSE) if present, or contract SPDX headers (`SalaryFHE.sol`: MIT).
+MIT — see SPDX headers in `packages/contracts/contracts/SalaryFHE.sol`.
 
 ---
 

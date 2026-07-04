@@ -5,45 +5,34 @@ import { PageContainer } from "@/components/PageContainer";
 import { ExplorePoolCard } from "@/components/explore/ExplorePoolCard";
 import { ExploreTrendCard } from "@/components/explore/ExploreTrendCard";
 import { useExplorePools } from "@/hooks/useExplorePools";
-import type { PoolHeat } from "@/lib/seed-manifest";
 
 type View = "pools" | "trends";
-type Filter = "all" | PoolHeat;
 
 const VIEWS: { id: View; label: string }[] = [
   { id: "pools", label: "Pools" },
   { id: "trends", label: "Trends" },
 ];
 
-const FILTERS: { id: Filter; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "live", label: "Live" },
-  { id: "warming", label: "Warming" },
-  { id: "empty", label: "Empty" },
-];
-
 export function ExplorePageContent() {
   const [view, setView] = useState<View>("pools");
-  const [filter, setFilter] = useState<Filter>("all");
-  const { pools, summary, isLoading } = useExplorePools();
+  const { pools, summary } = useExplorePools();
 
   const visible = useMemo(() => {
-    const base = filter === "all" ? pools : pools.filter((p) => p.heat === filter);
     if (view === "trends") {
-      return [...base].sort((a, b) => {
+      return [...pools].sort((a, b) => {
         const aDelta = a.trend?.deltaPercent ?? -Infinity;
         const bDelta = b.trend?.deltaPercent ?? -Infinity;
         return bDelta - aDelta;
       });
     }
-    return base;
-  }, [filter, pools, view]);
+    return pools;
+  }, [pools, view]);
 
   const heroCopy =
     view === "pools"
       ? {
           title: "Which pools are live?",
-          body: "See where confidential salary data is already flowing — demo pools plus any category with on-chain submissions.",
+          body: "See where confidential salary data is already flowing — seeded demo pools plus any category with on-chain submissions.",
         }
       : {
           title: "How are averages moving?",
@@ -68,14 +57,14 @@ export function ExplorePageContent() {
           {(view === "pools"
             ? [
                 { label: "All pools", value: summary.total },
-                { label: "Community", value: summary.community },
                 { label: "Live (k≥5)", value: summary.live },
                 { label: "Published avg", value: summary.published },
+                { label: "With tier data", value: summary.withTrend },
               ]
             : [
                 { label: "With tier history", value: summary.withTrend },
                 { label: "Trending up", value: summary.rising },
-                { label: "Community pools", value: summary.community },
+                { label: "Published avg", value: summary.published },
                 { label: "All pools", value: summary.total },
               ]
           ).map((stat) => (
@@ -89,9 +78,8 @@ export function ExplorePageContent() {
           ))}
         </section>
 
-        <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-wrap gap-2">
-            {VIEWS.map((v) => (
+        <div className="mt-8 flex flex-wrap gap-2">
+          {VIEWS.map((v) => (
               <button
                 key={v.id}
                 type="button"
@@ -105,30 +93,6 @@ export function ExplorePageContent() {
                 {v.label}
               </button>
             ))}
-          </div>
-
-          {view === "pools" && (
-            <div className="flex flex-wrap gap-2">
-              {FILTERS.map((f) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => setFilter(f.id)}
-                  className={`rounded-xl px-3.5 py-2 text-sm font-semibold transition-colors ${
-                    filter === f.id
-                      ? "bg-green/15 text-green-deep"
-                      : "text-muted hover:bg-green/5 hover:text-green-deep"
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {isLoading && (
-            <p className="text-xs font-medium text-muted">Syncing events &amp; Sepolia reads…</p>
-          )}
         </div>
 
         {view === "trends" && (
@@ -150,7 +114,7 @@ export function ExplorePageContent() {
         </div>
 
         {visible.length === 0 && (
-          <p className="mt-10 text-center text-sm text-muted">No pools match this filter.</p>
+          <p className="mt-10 text-center text-sm text-muted">No pools to show yet.</p>
         )}
       </PageContainer>
     </main>

@@ -82,12 +82,14 @@ function DocSteps({ items }: { items: Extract<DocBlock, { type: "steps" }>["item
         <li
           key={step.n}
           id={slugifyHeading(step.title)}
-          className={`grid grid-cols-[1.75rem_minmax(0,1fr)] items-start gap-x-4 py-6 ${SCROLL_MT}`}
+          className={`py-6 ${SCROLL_MT}`}
         >
-          <StepNumber n={step.n} />
-          <div className="min-w-0 pt-0.5">
-            <h3 className="text-base font-semibold leading-snug text-ink">{step.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{step.body}</p>
+          <div className="flex items-center gap-3">
+            <StepNumber n={step.n} />
+            <h3 className="min-w-0 text-base font-semibold leading-snug text-ink">{step.title}</h3>
+          </div>
+          <div className="mt-2 pl-10">
+            <p className="text-sm leading-relaxed text-muted">{step.body}</p>
             {step.detail && (
               <p className="mt-3 border-l-2 border-green/20 pl-3 text-xs leading-relaxed text-muted">
                 {step.detail}
