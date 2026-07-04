@@ -11,7 +11,7 @@ Built for the [Zama Developer Program — Builder Track](https://www.zama.org/po
 [![FHEVM](https://img.shields.io/badge/FHEVM-v0.11-1E40AF)](https://docs.zama.ai/fhevm)
 [![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
 [![Sepolia](https://img.shields.io/badge/Sepolia-11155111-6F4CFF?logo=ethereum&logoColor=white)](https://sepolia.etherscan.io/address/0xb452901e6C5231e8c15Feda1294143d48574325B)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
@@ -443,18 +443,16 @@ Report issues responsibly via GitHub Issues.
 
 ## Roadmap
 
-- [x] Category explorer (active pools, community discovery via events)
-- [x] Tier history charts from on-chain reads
-- [ ] Dedicated Trust UI strip on `/app` and Explore
-- [ ] Percentile bands (encrypted range comparison)
-- [ ] Mainnet deployment
-- [ ] Multi-language UI (EN / TR)
+- Security audit, then mainnet deployment
+- Encrypted percentile bands (range comparison without revealing salary)
+- Trust UI — verify contract and deployment from the app
+- Turkish UI
 
 ---
 
 ## License
 
-MIT — see SPDX headers in `packages/contracts/contracts/SalaryFHE.sol`.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
