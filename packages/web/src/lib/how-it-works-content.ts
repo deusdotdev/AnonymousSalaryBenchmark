@@ -14,7 +14,6 @@ export const DOC_SECTIONS = [
   { slug: "concepts", label: "Core concepts" },
   { slug: "individual-flow", label: "Individual flow" },
   { slug: "public-release", label: "Public tier release" },
-  { slug: "company-flow", label: "Company flow" },
   { slug: "privacy", label: "Privacy model" },
   { slug: "trust", label: "Trust & verification" },
   { slug: "explore", label: "Explore & trends" },
@@ -117,7 +116,7 @@ export const DOC_PAGES: Record<DocSectionSlug, DocPage> = {
   overview: {
     label: "Overview",
     intro:
-      "ASB (Anonymous Salary Benchmark) lets people and companies compare compensation using fully homomorphic encryption on Ethereum. This page explains what the product does, who it is for, and how it differs from traditional salary surveys.",
+      "ASB (Anonymous Salary Benchmark) lets people compare compensation using fully homomorphic encryption on Ethereum. This page explains what the product does, who it is for, and how it differs from traditional salary surveys.",
     blocks: [
       {
         type: "p",
@@ -139,7 +138,6 @@ export const DOC_PAGES: Record<DocSectionSlug, DocPage> = {
         type: "ul",
         items: [
           "Individuals who want to know if they are above or below the market for their role, city, and seniority — without publishing their salary.",
-          "Companies that want to benchmark internal pay against the live market average for a category — without exposing payroll to a third party.",
           "Researchers and builders exploring FHEVM: tiered public releases, ACL-gated user decryption, and homomorphic aggregation in production-shaped flows.",
         ],
       },
@@ -165,11 +163,6 @@ export const DOC_PAGES: Record<DocSectionSlug, DocPage> = {
             "Private above/below bit",
             "Your wallet only",
             "After k≥5 and compareToAverage",
-          ],
-          [
-            "Company above-market bit",
-            "Company wallet only",
-            "After 5+ employees in category",
           ],
         ],
       },
@@ -220,7 +213,7 @@ export const DOC_PAGES: Record<DocSectionSlug, DocPage> = {
       },
       {
         type: "p",
-        text: "Each category (position × city × seniority) maps to a Bucket with an encrypted sum, participant count, live encrypted average, and per-tier TierPublish records. Individuals have one submission per wallet; companies maintain separate CompanyBucket aggregates keyed by company address + category.",
+        text: "Each category (position × city × seniority) maps to a Bucket with an encrypted sum, participant count, live encrypted average, and per-tier TierPublish records. Each wallet may submit once via submitSalary.",
       },
       {
         type: "code",
@@ -330,7 +323,6 @@ Bucket {
             bullets: [
               "Participant count is public on-chain (getBucketCount).",
               "encryptedAverage is only computed when count ≥ 5.",
-              "Company benchmarks require five employees in the same category bucket.",
             ],
           },
           {
@@ -366,7 +358,6 @@ Bucket {
             title: "One submission per wallet (individuals)",
             body: "hasSubmitted[address] gates submitSalary. You pick one category at submit time; userCategoryId is stored permanently. This limits pool poisoning by a single actor submitting many times.",
             bullets: [
-              "Companies use submitCompanySalary — unlimited employee rows from one wallet.",
               "Switching category after submit is not supported; use a new wallet if you made a mistake on testnet.",
             ],
           },
@@ -512,69 +503,6 @@ FHE.checkSignatures(cts, abi.encode(clearAverage), decryptionProof);`,
     ],
   },
 
-  "company-flow": {
-    label: "Company flow",
-    intro:
-      "How employers aggregate encrypted employee salaries and learn — with one private bit — whether they pay above the live market average for a category.",
-    blocks: [
-      {
-        type: "link",
-        before: "Use the",
-        href: "/company",
-        label: "company benchmark page",
-        after: "with a dedicated wallet (recommended: separate from personal submit wallet).",
-      },
-      {
-        type: "steps",
-        items: [
-          {
-            n: "01",
-            title: "Connect company wallet",
-            body: "Same Sepolia + FHE stack as individuals. There is no separate contract — company flows use submitCompanySalary and computeCompanyComparison on SalaryFHE.",
-          },
-          {
-            n: "02",
-            title: "Add employees (encrypted)",
-            body: "For each employee pick category + USD salary. submitCompanySalary encrypts locally and increments both the global market bucket and your CompanyBucket keyed by keccak256(company, categoryId).",
-            detail: "Each employee row also adds to the public market pool — company data helps everyone’s aggregate.",
-          },
-          {
-            n: "03",
-            title: "Reach five in a category",
-            body: `getCompanyBucketCount(yourAddress, categoryId) must be ≥ ${MIN_PARTICIPANTS}. Until then computeCompanyComparison reverts CompanyNotEnoughEmployees.`,
-          },
-          {
-            n: "04",
-            title: "Benchmark",
-            body: "computeCompanyComparison computes encrypted companyAverage = sum / count, then ebool = FHE.gt(companyAverage, market.encryptedAverage). User-decrypt the handle — above market or not.",
-            detail: "Market side requires market.averageComputed (global pool already has k≥5).",
-          },
-        ],
-      },
-      {
-        type: "h2",
-        text: "Individual vs company on the same contract",
-      },
-      {
-        type: "table",
-        headers: ["", "Individual", "Company"],
-        rows: [
-          ["Submit function", "submitSalary", "submitCompanySalary"],
-          ["Submit limit", "Once per wallet", "Unlimited employees"],
-          ["Comparison", "compareToAverage", "computeCompanyComparison"],
-          ["Output", "You vs market avg", "Company avg vs market avg"],
-          ["Decrypt", "User decrypt (EIP-712)", "User decrypt (EIP-712)"],
-        ],
-      },
-      {
-        type: "callout",
-        variant: "info",
-        title: "Privacy expectation",
-        body: "Employee rows are encrypted like individual submits. The contract never stores clear salaries. Only your company wallet can decrypt the final above/below bit for your bucket.",
-      },
-    ],
-  },
-
   privacy: {
     label: "Privacy model",
     intro:
@@ -589,8 +517,6 @@ FHE.checkSignatures(cts, abi.encode(clearAverage), decryptionProof);`,
         items: [
           "Your exact salary — only as euint64 ciphertext on-chain; clear value only in your browser before encrypt.",
           "Your compareToAverage result — ebool ACL’d to your address; user decryption requires your signature.",
-          "Company employee salaries — aggregated inside encrypted CompanyBucket; no per-employee clear export.",
-          "Company benchmark bit — ACL’d to company wallet only.",
         ],
       },
       {
@@ -854,14 +780,6 @@ export const INDIVIDUAL_STEPS =
       >).items.map((s) => ({ n: s.n, title: s.title, body: s.body }))
     : [];
 
-export const COMPANY_STEPS =
-  DOC_PAGES["company-flow"].blocks.find((b) => b.type === "steps")?.type === "steps"
-    ? (DOC_PAGES["company-flow"].blocks.find((b) => b.type === "steps") as Extract<
-        DocBlock,
-        { type: "steps" }
-      >).items.map((s) => ({ n: s.n, title: s.title, body: s.body }))
-    : [];
-
 export const CONCEPTS =
   DOC_PAGES.concepts.blocks.find((b) => b.type === "concepts")?.type === "concepts"
     ? (DOC_PAGES.concepts.blocks.find((b) => b.type === "concepts") as Extract<
@@ -887,6 +805,4 @@ export const PUBLIC_RELEASE_STEPS =
 export const PRIVACY_ITEMS = [
   "Your exact salary is encrypted end-to-end and never stored in clear text.",
   "Your personal comparison result is user-decryptable only by your wallet.",
-  "Company salary entries are aggregated in encrypted company buckets.",
-  "Company benchmark output is only visible to the company wallet.",
 ];

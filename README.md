@@ -2,7 +2,7 @@
 
 **Confidential salary benchmarking on Zama FHEVM (Ethereum Sepolia)**
 
-ASB lets individuals and companies compare compensation against market averages **without ever exposing clear-text salaries on-chain**. Salaries are encrypted in the browser, aggregated homomorphically in Solidity, and compared via private decryption — only the submitter learns their result.
+ASB lets individuals compare compensation against market averages **without ever exposing clear-text salaries on-chain**. Salaries are encrypted in the browser, aggregated homomorphically in Solidity, and compared via private decryption — only the submitter learns their result.
 
 Built for the [Zama Developer Program — Builder Track](https://www.zama.org/post/zama-developer-program-mainnet-season-3-composable-privacy-is-the-key).
 
@@ -52,7 +52,7 @@ ASB inverts that model:
 3. **Release averages at tier boundaries** — public numbers appear only at 5, 10, 15… participants (k-anonymity).
 4. **Private comparisons** — each user decrypts a single bit: above or below the live pool average.
 
-Use cases: individual market positioning, confidential payroll benchmarking for employers, and transparent category averages without doxxing contributors.
+Use cases: individual market positioning and transparent category averages without doxxing contributors.
 
 ---
 
@@ -64,7 +64,6 @@ Use cases: individual market positioning, confidential payroll benchmarking for 
 | **k-anonymity (k ≥ 5)** | No averages or benchmarks until five participants share a category |
 | **Tiered public release** | Snapshots at 5, 10, 15… with KMS-verified `finalizeAverage` |
 | **Live private compare** | `FHE.gt(yourSalary, poolAverage)` — user-decryptable only by submitter |
-| **Company benchmarking** | Unlimited encrypted employee entries; private above/below market bit |
 | **Rich categories** | 35 roles × 55 cities × 6 seniority levels |
 | **Explore dashboard** | Live pool health, tier trends, and on-chain event discovery |
 | **Sepolia seed tooling** | One-command demo data: 10 categories × 10 wallets + tier publish + manifest sync |
@@ -80,7 +79,7 @@ Use cases: individual market positioning, confidential payroll benchmarking for 
 | **Contract** | [`0xb452901e6C5231e8c15Feda1294143d48574325B`](https://sepolia.etherscan.io/address/0xb452901e6C5231e8c15Feda1294143d48574325B) |
 | **Frontend** | Run locally (`npm run web:dev`) or deploy `packages/web` to Vercel |
 | **Explore** | `/explore` — pools, tier trends, and event-discovered categories |
-| **Docs** | `/how-it-works/overview` — full in-app guide (10 sections) |
+| **Docs** | `/how-it-works/overview` — in-app guide (9 sections) |
 
 ---
 
@@ -126,8 +125,6 @@ flowchart TB
 
 - Exact salary (ciphertext handles only on-chain)
 - Personal comparison result (one `ebool`, ACL-granted to submitter)
-- Per-employee company salaries (aggregated inside encrypted company bucket)
-- Company benchmark outcome (above/below market, decryptable only by company wallet)
 
 ### Public on-chain
 
@@ -174,11 +171,11 @@ FheSalary/
 │   │   └── deployments/sepolia.json
 │   └── web/
 │       ├── src/
-│       │   ├── app/                   # Next.js routes (/, /app, /company, /explore, /how-it-works/*)
+│       │   ├── app/                   # Next.js routes (/, /app, /explore, /how-it-works/*)
 │       │   ├── components/            # UI, docs sidebar, Explore cards, SVG icons
 │       │   ├── context/               # FhevmProvider (SDK preload on boot)
 │       │   ├── data/                  # seed-manifest.json (demo pool metadata)
-│       │   ├── hooks/                 # useSalaryFhe, useCompanyFhe, useExplorePools, useDiscoveredCategoryIds
+│       │   ├── hooks/                 # useSalaryFhe, useExplorePools, useDiscoveredCategoryIds
 │       │   ├── lib/                   # contract, categories, category-registry, seed-manifest, how-it-works-content
 │       │   └── abi/                   # Generated ABI + deployment.json (address fallback)
 │       └── public/                    # Logo assets
@@ -262,8 +259,8 @@ The deploy script automatically updates `NEXT_PUBLIC_SALARY_FHE_ADDRESS` in `.en
 | `compareToAverage()` | Individual | Homomorphic compare vs live pool; grants user-decryptable `ebool` |
 | `requestAverageRelease(categoryId, tier)` | Anyone | Step 1 of public tier release |
 | `finalizeAverage(categoryId, tier, clearAvg, proof)` | Anyone | Step 3: verify KMS proof, store clear average |
-| `submitCompanySalary(...)` | Company | Add encrypted employee salary to market + company bucket |
-| `computeCompanyComparison(...)` | Company | Private above/below market for company average |
+
+Company-facing functions (`submitCompanySalary`, `computeCompanyComparison`) exist on the deployed contract but are **not exposed in the web UI** — planned for a future release (see [Roadmap](#roadmap)).
 
 ### View helpers
 
@@ -295,7 +292,6 @@ npm run contracts:test
 - Tier-5 and tier-10 public release (full three-step flow)
 - Invalid tier rejection (e.g. count = 7)
 - Live compare still works after tier publish
-- Company pool aggregation and benchmark
 - Category ID hash parity with frontend (`viem` keccak256)
 - Out-of-range category indices
 
@@ -353,13 +349,13 @@ The Explore page surfaces pool activity without a backend:
 
 | View | What it shows |
 |------|----------------|
-| **Pools** | Heat badges (live / warming / empty), participant counts, published tier averages, fill progress |
+| **Pools** | Live badge, participant counts, published tier averages, fill progress |
 | **Trends** | Tier-to-tier delta (e.g. avg at 5 vs 10 participants) with a sparkline chart |
 
 **Data sources (merged in the browser):**
 
 1. **`seed-manifest.json`** — curated demo categories (always listed, even at 0 participants).
-2. **Event logs** — `SalarySubmitted` and `CompanySalarySubmitted` scanned via `getLogs`; any active category appears as a **Community** pool (participants > 0 only).
+2. **Event logs** — `SalarySubmitted` (and legacy `CompanySalarySubmitted`) scanned via `getLogs`; active categories are merged into Explore.
 3. **Live reads** — `getBucketCount`, `isTierFinalized`, `getClearAverage` override manifest fallbacks when RPC is connected.
 
 Event discovery refetches about every 60 seconds. Labels for discovered categories are resolved from the full position × city × seniority registry (`category-registry.ts`).
@@ -386,19 +382,12 @@ Event discovery refetches about every 60 seconds. Labels for discovered categori
 5. After k ≥ 5: **Compare my salary privately** → decrypt above/below bit.
 6. Optional: **Publish tier N average** (public three-step flow).
 
-### Companies (`/company`)
-
-1. Connect company wallet.
-2. Add employee salaries per category (unlimited entries).
-3. After ≥ 5 employees in a category and market average ready: **Benchmark privately**.
-4. Decrypt single bit: paying above or at/below market.
-
 ### Explore (`/explore`)
 
 1. Open **Explore** from the nav or landing page.
-2. **Pools** tab — filter by live / warming / empty; demo pools show `X/10` slots, community pools show raw participant count.
+2. **Pools** tab — participant counts, published tier averages, and live pool badges.
 3. **Trends** tab — categories with both tier-5 and tier-10 published averages, sorted by largest % move.
-4. Click **View pool** to jump to `/app` with that category pre-selected.
+4. Click **Open in benchmark app** to jump to `/app` with that category pre-selected.
 
 ---
 
@@ -413,7 +402,6 @@ In-app docs (sidebar with section anchors):
 | Core concepts | `/how-it-works/concepts` |
 | Individual flow | `/how-it-works/individual-flow` |
 | Public tier release | `/how-it-works/public-release` |
-| Company flow | `/how-it-works/company-flow` |
 | Privacy model | `/how-it-works/privacy` |
 | Trust & verification | `/how-it-works/trust` |
 | Explore & trends | `/how-it-works/explore` |
@@ -443,6 +431,7 @@ Report issues responsibly via GitHub Issues.
 
 ## Roadmap
 
+- **Company benchmark UI** — `/company` flow for encrypted payroll vs market (contract functions already on Sepolia)
 - Security audit, then mainnet deployment
 - Encrypted percentile bands (range comparison without revealing salary)
 - Trust UI — verify contract and deployment from the app
