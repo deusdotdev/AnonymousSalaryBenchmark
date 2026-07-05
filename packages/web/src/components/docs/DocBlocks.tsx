@@ -69,7 +69,7 @@ function DocTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
 
 function StepNumber({ n }: { n: string }) {
   return (
-    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-deep text-[11px] font-semibold tabular-nums leading-none text-white">
+    <span className="mt-[3px] inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-deep text-[11px] font-semibold tabular-nums leading-none text-white">
       {n}
     </span>
   );
@@ -82,14 +82,12 @@ function DocSteps({ items }: { items: Extract<DocBlock, { type: "steps" }>["item
         <li
           key={step.n}
           id={slugifyHeading(step.title)}
-          className={`py-6 ${SCROLL_MT}`}
+          className={`flex items-start gap-3 py-6 ${SCROLL_MT}`}
         >
-          <div className="flex items-center gap-3">
-            <StepNumber n={step.n} />
-            <h3 className="min-w-0 text-base font-semibold leading-snug text-ink">{step.title}</h3>
-          </div>
-          <div className="mt-2 pl-10">
-            <p className="text-sm leading-relaxed text-muted">{step.body}</p>
+          <StepNumber n={step.n} />
+          <div className="min-w-0 flex-1">
+            <h3 className="text-base font-semibold leading-snug text-ink">{step.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{step.body}</p>
             {step.detail && (
               <p className="mt-3 border-l-2 border-green/20 pl-3 text-xs leading-relaxed text-muted">
                 {step.detail}
