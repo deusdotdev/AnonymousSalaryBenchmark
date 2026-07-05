@@ -4,7 +4,7 @@ export function DocGuideCta() {
   return (
     <section
       id="ready-to-try"
-      className="mt-12 max-w-3xl scroll-mt-32 border-t border-green/10 pt-8"
+      className="mt-8 max-w-3xl scroll-mt-32 border-t-2 border-green/25 pt-5"
     >
       <h2 className="text-lg font-semibold text-ink">Ready to try it?</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted">

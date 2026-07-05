@@ -4,12 +4,31 @@ import type { DocBlock } from "@/lib/how-it-works-content";
 import { slugifyHeading } from "@/lib/how-it-works-content";
 
 const SCROLL_MT = "scroll-mt-32";
+const SECTION_DIVIDER = "divide-y-2 divide-green/25 border-y-2 border-green/25";
+const SECTION_PAD = "py-4";
+const BLOCK_MY = "my-4";
 
 const CALLOUT_STYLES = {
-  info: "border-green/20 bg-green/[0.04]",
-  warning: "border-amber-500/25 bg-amber-500/[0.06]",
-  trust: "border-green/20 bg-green/[0.04]",
+  info: "border-green/25 bg-green/[0.04]",
+  warning: "border-amber-500/30 bg-amber-500/[0.06]",
+  trust: "border-green/25 bg-green/[0.04]",
 } as const;
+
+function DocBulletList({ items, className = "" }: { items: string[]; className?: string }) {
+  return (
+    <ul className={`mt-2 space-y-1.5 text-sm leading-relaxed text-muted ${className}`}>
+      {items.map((item) => (
+        <li key={item} className="flex gap-2.5">
+          <span
+            className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-green-deep"
+            aria-hidden
+          />
+          <span className="min-w-0 flex-1">{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 function DocCallout({
   variant,
@@ -22,9 +41,9 @@ function DocCallout({
 }) {
   return (
     <aside
-      className={`my-6 rounded-lg border px-4 py-3.5 text-sm leading-relaxed text-muted ${CALLOUT_STYLES[variant]}`}
+      className={`${BLOCK_MY} rounded-lg border px-4 py-3 text-sm leading-relaxed text-muted ${CALLOUT_STYLES[variant]}`}
     >
-      {title && <p className="mb-1.5 text-sm font-semibold text-ink">{title}</p>}
+      {title && <p className="mb-1 text-sm font-semibold text-ink">{title}</p>}
       {children}
     </aside>
   );
@@ -32,7 +51,7 @@ function DocCallout({
 
 function DocCode({ code }: { code: string }) {
   return (
-    <pre className="my-5 overflow-x-auto rounded-lg border border-green/15 bg-ink/[0.03] p-4 text-[13px] leading-relaxed text-ink">
+    <pre className={`${BLOCK_MY} overflow-x-auto rounded-lg border border-green/20 bg-ink/[0.03] p-4 text-[13px] leading-relaxed text-ink`}>
       <code>{code}</code>
     </pre>
   );
@@ -40,22 +59,22 @@ function DocCode({ code }: { code: string }) {
 
 function DocTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
-    <div className="my-6 overflow-x-auto rounded-lg border border-green/15">
+    <div className={`${BLOCK_MY} overflow-x-auto rounded-lg border border-green/20`}>
       <table className="w-full min-w-[480px] text-left text-sm">
-        <thead className="border-b border-green/15 bg-green/[0.04]">
+        <thead className="border-b border-green/20 bg-green/[0.04]">
           <tr>
             {headers.map((h) => (
-              <th key={h} className="px-4 py-3 font-semibold text-ink">
+              <th key={h} className="px-4 py-2.5 font-semibold text-ink">
                 {h}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-green/10 text-muted">
+        <tbody className="divide-y divide-green/15 text-muted">
           {rows.map((row, i) => (
             <tr key={i}>
               {row.map((cell, j) => (
-                <td key={j} className="px-4 py-3 align-top">
+                <td key={j} className="px-4 py-2.5 align-top">
                   {cell}
                 </td>
               ))}
@@ -69,7 +88,7 @@ function DocTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
 
 function StepNumber({ n }: { n: string }) {
   return (
-    <span className="mt-[3px] inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-deep text-[11px] font-semibold tabular-nums leading-none text-white">
+    <span className="mt-[2px] inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-deep text-[11px] font-semibold tabular-nums leading-none text-white">
       {n}
     </span>
   );
@@ -77,19 +96,19 @@ function StepNumber({ n }: { n: string }) {
 
 function DocSteps({ items }: { items: Extract<DocBlock, { type: "steps" }>["items"] }) {
   return (
-    <ol className="my-6 divide-y divide-green/10 border-y border-green/10">
+    <ol className={`${BLOCK_MY} ${SECTION_DIVIDER}`}>
       {items.map((step) => (
         <li
           key={step.n}
           id={slugifyHeading(step.title)}
-          className={`flex items-start gap-3 py-6 ${SCROLL_MT}`}
+          className={`flex items-start gap-3 ${SECTION_PAD} ${SCROLL_MT}`}
         >
           <StepNumber n={step.n} />
           <div className="min-w-0 flex-1">
             <h3 className="text-base font-semibold leading-snug text-ink">{step.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{step.body}</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">{step.body}</p>
             {step.detail && (
-              <p className="mt-3 border-l-2 border-green/20 pl-3 text-xs leading-relaxed text-muted">
+              <p className="mt-2 border-l-2 border-green/30 pl-3 text-xs leading-relaxed text-muted">
                 {step.detail}
               </p>
             )}
@@ -102,22 +121,16 @@ function DocSteps({ items }: { items: Extract<DocBlock, { type: "steps" }>["item
 
 function DocConcepts({ items }: { items: Extract<DocBlock, { type: "concepts" }>["items"] }) {
   return (
-    <div className="my-6 divide-y divide-green/10 border-y border-green/10">
+    <div className={`${BLOCK_MY} ${SECTION_DIVIDER}`}>
       {items.map((c) => (
         <section
           key={c.title}
           id={slugifyHeading(c.title)}
-          className={`py-6 ${SCROLL_MT}`}
+          className={`${SECTION_PAD} ${SCROLL_MT}`}
         >
-          <h3 className="text-base font-semibold text-ink">{c.title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted">{c.body}</p>
-          {c.bullets && c.bullets.length > 0 && (
-            <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-muted">
-              {c.bullets.map((b) => (
-                <li key={b}>{b}</li>
-              ))}
-            </ul>
-          )}
+          <h3 className="text-base font-semibold leading-snug text-ink">{c.title}</h3>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted">{c.body}</p>
+          {c.bullets && c.bullets.length > 0 && <DocBulletList items={c.bullets} />}
         </section>
       ))}
     </div>
@@ -126,11 +139,11 @@ function DocConcepts({ items }: { items: Extract<DocBlock, { type: "concepts" }>
 
 function DocFaq({ items }: { items: Extract<DocBlock, { type: "faq" }>["items"] }) {
   return (
-    <div className="my-6 divide-y divide-green/10 border-y border-green/10">
+    <div className={`${BLOCK_MY} ${SECTION_DIVIDER}`}>
       {items.map((item) => (
-        <section key={item.q} id={slugifyHeading(item.q)} className={`py-6 ${SCROLL_MT}`}>
+        <section key={item.q} id={slugifyHeading(item.q)} className={`${SECTION_PAD} ${SCROLL_MT}`}>
           <h3 className="text-base font-semibold leading-snug text-ink">{item.q}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted">{item.a}</p>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted">{item.a}</p>
         </section>
       ))}
     </div>
@@ -138,13 +151,7 @@ function DocFaq({ items }: { items: Extract<DocBlock, { type: "faq" }>["items"] 
 }
 
 function DocTrustBadges({ badges }: { badges: string[] }) {
-  return (
-    <ul className="my-6 list-disc space-y-1 pl-5 text-sm text-muted">
-      {badges.map((badge) => (
-        <li key={badge}>{badge}</li>
-      ))}
-    </ul>
-  );
+  return <DocBulletList items={badges} className={BLOCK_MY} />;
 }
 
 export function DocArticle({
@@ -158,11 +165,11 @@ export function DocArticle({
 }) {
   return (
     <article className="max-w-3xl">
-      <header className="mb-8 border-b border-green/10 pb-6">
+      <header className="mb-6 border-b-2 border-green/25 pb-4">
         <h1 className="text-2xl font-bold text-ink sm:text-3xl">{title}</h1>
-        <p className="mt-3 text-[15px] leading-7 text-muted">{intro}</p>
+        <p className="mt-2 text-[15px] leading-relaxed text-muted">{intro}</p>
       </header>
-      <div className="doc-prose text-[15px] leading-7 text-muted [&_h2]:mb-3 [&_h2]:mt-10 [&_h2]:border-b [&_h2]:border-green/10 [&_h2]:pb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-ink [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-ink [&_p+p]:mt-4 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5">
+      <div className="doc-prose text-[15px] leading-relaxed text-muted [&_h2]:mb-2 [&_h2]:mt-8 [&_h2]:border-b [&_h2]:border-green/25 [&_h2]:pb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-ink [&_h3]:mb-1.5 [&_h3]:mt-5 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-ink [&_p+p]:mt-3">
         {children}
       </div>
     </article>
@@ -185,13 +192,7 @@ export function DocBlockRenderer({ blocks }: { blocks: DocBlock[] }) {
           case "h3":
             return <h3 key={index}>{block.text}</h3>;
           case "ul":
-            return (
-              <ul key={index}>
-                {block.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            );
+            return <DocBulletList key={index} items={block.items} className="my-3" />;
           case "callout":
             return (
               <DocCallout key={index} variant={block.variant} title={block.title}>
