@@ -88,25 +88,25 @@ function DocTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
 
 function StepNumber({ n }: { n: string }) {
   return (
-    <span className="mt-[2px] inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-deep text-[11px] font-semibold tabular-nums leading-none text-white">
+    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-deep text-[11px] font-semibold tabular-nums leading-none text-white">
       {n}
     </span>
   );
 }
 
+const STEP_BODY_INDENT = "pl-10";
+
 function DocSteps({ items }: { items: Extract<DocBlock, { type: "steps" }>["items"] }) {
   return (
     <ol className={`${BLOCK_MY} ${SECTION_DIVIDER}`}>
       {items.map((step) => (
-        <li
-          key={step.n}
-          id={slugifyHeading(step.title)}
-          className={`flex items-start gap-3 ${SECTION_PAD} ${SCROLL_MT}`}
-        >
-          <StepNumber n={step.n} />
-          <div className="min-w-0 flex-1">
-            <h3 className="text-base font-semibold leading-snug text-ink">{step.title}</h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-muted">{step.body}</p>
+        <li key={step.n} id={slugifyHeading(step.title)} className={`${SECTION_PAD} ${SCROLL_MT}`}>
+          <div className="flex items-center gap-3">
+            <StepNumber n={step.n} />
+            <h3 className="min-w-0 flex-1 text-base font-semibold leading-snug text-ink">{step.title}</h3>
+          </div>
+          <div className={`mt-1.5 ${STEP_BODY_INDENT}`}>
+            <p className="text-sm leading-relaxed text-muted">{step.body}</p>
             {step.detail && (
               <p className="mt-2 border-l-2 border-green/30 pl-3 text-xs leading-relaxed text-muted">
                 {step.detail}
@@ -169,7 +169,7 @@ export function DocArticle({
         <h1 className="text-2xl font-bold text-ink sm:text-3xl">{title}</h1>
         <p className="mt-2 text-[15px] leading-relaxed text-muted">{intro}</p>
       </header>
-      <div className="doc-prose text-[15px] leading-relaxed text-muted [&_h2]:mb-2 [&_h2]:mt-8 [&_h2]:border-b [&_h2]:border-green/25 [&_h2]:pb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-ink [&_h3]:mb-1.5 [&_h3]:mt-5 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-ink [&_p+p]:mt-3">
+      <div className="doc-prose text-[15px] leading-relaxed text-muted [&>h2]:mb-2 [&>h2]:mt-8 [&>h2]:border-b [&>h2]:border-green/25 [&>h2]:pb-2 [&>h2]:text-lg [&>h2]:font-semibold [&>h2]:text-ink [&>h3]:mb-1.5 [&>h3]:mt-5 [&>h3]:text-base [&>h3]:font-semibold [&>h3]:text-ink [&>p+p]:mt-3">
         {children}
       </div>
     </article>
