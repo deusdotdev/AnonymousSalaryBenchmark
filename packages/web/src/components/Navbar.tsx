@@ -13,6 +13,7 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const showWallet = pathname === "/app" || pathname.startsWith("/app/");
 
   return (
     <div className="sticky top-4 z-40 w-full px-4 sm:px-6 lg:px-10 xl:px-14">
@@ -44,7 +45,9 @@ export function Navbar() {
           <div className="hidden sm:block">
             <LaunchMenu variant="nav" />
           </div>
-          <ConnectButton accountStatus="avatar" chainStatus="icon" showBalance={false} />
+          {showWallet && (
+            <ConnectButton accountStatus="avatar" chainStatus="icon" showBalance={false} />
+          )}
         </div>
       </nav>
     </div>

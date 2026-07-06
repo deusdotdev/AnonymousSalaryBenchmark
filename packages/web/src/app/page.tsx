@@ -81,7 +81,7 @@ export default function LandingPage() {
       {/* Features */}
       <section className="mt-16 grid gap-6 md:grid-cols-3 xl:gap-8">
         {FEATURES.map((f, i) => (
-          <Card key={f.title} glow={(["violet", "cyan", "emerald"] as const)[i]}>
+          <Card key={f.title}>
             <FeatureIllustration variant={f.illustration} className="mb-5" />
             <h3 className="text-lg font-bold text-ink">{f.title}</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">{f.body}</p>

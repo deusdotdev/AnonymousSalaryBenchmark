@@ -55,7 +55,7 @@ export function SubmitCard({
         : "Encrypt & submit";
 
   return (
-    <Card glow="violet">
+    <Card>
       <div className="mb-5 flex items-center gap-3">
         <IconBadge name="lock" className="shrink-0" />
         <div>

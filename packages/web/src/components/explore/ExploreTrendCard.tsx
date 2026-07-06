@@ -11,7 +11,7 @@ export function ExploreTrendCard({ pool }: ExploreTrendCardProps) {
   const { entry, trend, tierSnapshots } = pool;
 
   return (
-    <Card glow="cyan">
+    <Card>
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-muted">Tier trend</p>

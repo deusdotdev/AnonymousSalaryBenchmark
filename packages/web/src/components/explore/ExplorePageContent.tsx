@@ -42,9 +42,8 @@ export function ExplorePageContent() {
   return (
     <main className="w-full py-10 sm:py-14">
       <PageContainer>
-        <section className="relative overflow-hidden rounded-[2rem] border border-green/15 bg-gradient-to-br from-white/90 via-green/5 to-mint/10 px-6 py-10 sm:px-10">
-          <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-green-soft/30 blur-3xl" />
-          <div className="relative max-w-3xl">
+        <section className="rounded-[2rem] border border-green/15 bg-gradient-to-br from-white/90 via-green/5 to-mint/10 px-6 py-10 sm:px-10">
+          <div className="max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-widest text-green-deep">Explore</p>
             <h1 className="mt-2 bg-gradient-to-r from-green-deep via-green to-leaf bg-clip-text text-4xl font-black tracking-tight text-transparent sm:text-5xl">
               {heroCopy.title}

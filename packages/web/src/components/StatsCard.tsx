@@ -47,7 +47,7 @@ export function StatsCard({
   const baseDisabled = !isConnected || !sdkReady || !contractConfigured || working;
 
   return (
-    <Card glow="cyan">
+    <Card>
       <div className="mb-5 flex items-center gap-3">
         <IconBadge name="chart" className="shrink-0" />
         <div>

@@ -12,7 +12,7 @@ export function ExplorePoolCard({ pool }: ExplorePoolCardProps) {
   const { entry } = pool;
 
   return (
-    <Card glow={pool.isLive ? "emerald" : "violet"}>
+    <Card>
       <div className="flex items-start justify-between gap-3">
         <div>
           {pool.isLive && (
