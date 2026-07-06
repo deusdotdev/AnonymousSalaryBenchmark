@@ -56,7 +56,8 @@ export type DocBlock =
       items: { icon: IconName; title: string; body: string; bullets?: string[] }[];
     }
   | { type: "faq"; items: { q: string; a: string }[] }
-  | { type: "trust-badges"; badges: string[] };
+  | { type: "trust-badges"; badges: string[] }
+  | { type: "deployment" };
 
 export interface DocPage {
   label: string;
@@ -104,6 +105,9 @@ function extractAnchorsFromBlocks(blocks: DocBlock[]): DocAnchor[] {
 
 export function getPageAnchors(slug: DocSectionSlug): DocAnchor[] {
   const anchors = extractAnchorsFromBlocks(DOC_PAGES[slug].blocks);
+  if (slug === "overview") {
+    anchors.push({ id: "contract-address", label: "Contract address" });
+  }
   if (slug === "faq") {
     anchors.push({ id: "ready-to-try", label: "Ready to try it?" });
   }
@@ -170,8 +174,9 @@ export const DOC_PAGES: Record<DocSectionSlug, DocPage> = {
         type: "callout",
         variant: "info",
         title: "Testnet today",
-        body: `ASB currently runs on ${DEPLOYMENT.network} (chain ID ${DEPLOYMENT.chainId}). You need test ETH and a browser wallet. Contract: ${DEPLOYMENT.address.slice(0, 10)}…${DEPLOYMENT.address.slice(-8)}.`,
+        body: `ASB currently runs on ${DEPLOYMENT.network} (chain ID ${DEPLOYMENT.chainId}). You need test ETH and a browser wallet.`,
       },
+      { type: "deployment" },
       {
         type: "link",
         before: "Ready to try it?",

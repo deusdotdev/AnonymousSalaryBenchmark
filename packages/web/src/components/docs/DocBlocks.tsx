@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 import { Icon } from "@/components/icons/Icon";
+import { DocCopyAddress } from "@/components/docs/DocCopyAddress";
 import type { DocBlock } from "@/lib/how-it-works-content";
-import { slugifyHeading } from "@/lib/how-it-works-content";
+import { DEPLOYMENT, slugifyHeading } from "@/lib/how-it-works-content";
 
 const SCROLL_MT = "scroll-mt-32";
 const SECTION_PAD = "p-4 sm:p-5";
@@ -308,6 +309,16 @@ export function DocBlockRenderer({ blocks }: { blocks: DocBlock[] }) {
             return <DocFaq key={index} items={block.items} />;
           case "trust-badges":
             return <DocTrustBadges key={index} badges={block.badges} />;
+          case "deployment":
+            return (
+              <DocCopyAddress
+                key={index}
+                address={DEPLOYMENT.address}
+                etherscan={DEPLOYMENT.etherscan}
+                network={DEPLOYMENT.network}
+                chainId={DEPLOYMENT.chainId}
+              />
+            );
           default:
             return null;
         }
