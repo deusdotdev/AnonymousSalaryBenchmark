@@ -431,11 +431,34 @@ Report issues responsibly via GitHub Issues.
 
 ## Roadmap
 
-- **Company benchmark UI** — `/company` flow for encrypted payroll vs market (contract functions already on Sepolia)
-- Security audit, then mainnet deployment
-- Encrypted percentile bands (range comparison without revealing salary)
-- Trust UI — verify contract and deployment from the app
-- Turkish UI
+Items marked **(contract ready)** exist on the deployed contract but are not yet in the web UI.
+
+### Product
+
+- **Company benchmark UI** **(contract ready)** — encrypted payroll vs published market tier; private above/below market via `computeCompanyComparison`
+- **Turkish UI** — landing, app, Explore, and docs
+- **Trust UI** — verify contract address, chain, and tier events against Etherscan from the app
+- **Explore search & filter** — by role, city, seniority; sort by fill rate or tier trend
+
+### Privacy & verification
+
+- **Anonymous role attestation** — prove you belong in the selected category (role, seniority, optionally employer class) **without** linking wallet → real identity or revealing salary. Target flow: off-chain issuer or zk proof → on-chain nullifier / verifier → `submitSalary` only accepts matching category claims. Candidates to evaluate: **zkEmail / zkTLS** (payroll or employer-domain signal), **EAS attestations** with selective disclosure, or a **custom ZK verifier** contract that checks a credential hash against ASB category IDs. Salary stays FHE-encrypted as today; attestation and ciphertext remain cryptographically separate.
+- **Encrypted percentile bands** — range comparison (e.g. p25–p75) without exposing exact pay
+- **Session-based decrypt** — fewer wallet signatures on repeat compares (Zama delegated decryption)
+
+### Infrastructure
+
+- **Security audit**, then **mainnet** on a Zama-supported network
+- **Explore indexer** — subgraph or indexer for pool discovery (less RPC load than raw `getLogs`)
+- **@zama-fhe/sdk v3** — migrate encrypt/decrypt when session APIs stabilize
+
+### Later
+
+- **Category registry v2** — append roles/cities without breaking on-chain indices
+- **Cross-category insights** — seniority spread within role+city with higher k thresholds
+- **Governance & compliance** — community category proposals; HR/legal memo for company benchmark
+
+Open an Issue before large items — especially verification and contract changes — so FHEVM and privacy constraints stay aligned.
 
 ---
 
