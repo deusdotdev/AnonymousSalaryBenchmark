@@ -63,12 +63,25 @@ function buildExploreEntries(
 
 export function useExplorePools() {
   const contractConfigured = CONTRACT_ADDRESS !== ZERO_ADDRESS;
-  const { categoryIds: discoveredIds, isLoading: discoveryLoading } =
+  const { discovered, isLoading: discoveryLoading, isError: discoveryError } =
     useDiscoveredCategoryIds(contractConfigured);
 
+  const discoveredById = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const item of discovered) {
+      map.set(item.categoryId, item.participantCount);
+    }
+    return map;
+  }, [discovered]);
+
+  const discoveredIdSet = useMemo(
+    () => new Set(discovered.map((item) => item.categoryId)),
+    [discovered]
+  );
+
   const catalogEntries = useMemo(
-    () => buildExploreEntries(SEED_MANIFEST.categories, discoveredIds),
-    [discoveredIds]
+    () => buildExploreEntries(SEED_MANIFEST.categories, discovered.map((d) => d.categoryId)),
+    [discovered]
   );
 
   const manifestIdSet = useMemo(
@@ -135,8 +148,11 @@ export function useExplorePools() {
     return catalogEntries
       .map((entry, index) => {
         const onChainCount = countResults?.[index]?.result;
+        const eventCount = discoveredById.get(entry.categoryId);
         const participants =
-          onChainCount !== undefined ? Number(onChainCount) : entry.participantCount;
+          onChainCount !== undefined
+            ? Number(onChainCount)
+            : eventCount ?? entry.participantCount;
 
         const tierBase = index * 4;
         const liveTier5 = parseTierAverage(
@@ -173,9 +189,12 @@ export function useExplorePools() {
         };
       })
       .filter(
-        (pool) => manifestIdSet.has(pool.entry.categoryId) || pool.participants > 0
+        (pool) =>
+          manifestIdSet.has(pool.entry.categoryId) ||
+          discoveredIdSet.has(pool.entry.categoryId) ||
+          pool.participants > 0
       );
-  }, [catalogEntries, countResults, tierResults, manifestIdSet]);
+  }, [catalogEntries, countResults, tierResults, manifestIdSet, discoveredById, discoveredIdSet]);
 
   const summary = useMemo(() => {
     const live = pools.filter((p) => p.isLive).length;
@@ -192,6 +211,7 @@ export function useExplorePools() {
     network: SEED_MANIFEST.network,
     contractAddress: SEED_MANIFEST.contractAddress,
     contractConfigured,
+    discoveryError,
     isLoading:
       contractConfigured && (discoveryLoading || countsLoading || tiersLoading),
   };

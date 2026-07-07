@@ -15,7 +15,7 @@ const VIEWS: { id: View; label: string }[] = [
 
 export function ExplorePageContent() {
   const [view, setView] = useState<View>("pools");
-  const { pools, summary } = useExplorePools();
+  const { pools, summary, discoveryError } = useExplorePools();
 
   const visible = useMemo(() => {
     if (view === "trends") {
@@ -51,6 +51,14 @@ export function ExplorePageContent() {
             <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">{heroCopy.body}</p>
           </div>
         </section>
+
+        {discoveryError && (
+          <div className="mt-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm text-amber-800">
+            Could not scan on-chain events for new pools. Seeded categories may still appear with
+            stale counts. Try again or use a dedicated Sepolia RPC via{" "}
+            <code className="font-mono text-xs">NEXT_PUBLIC_SEPOLIA_RPC_URL</code>.
+          </div>
+        )}
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {(view === "pools"

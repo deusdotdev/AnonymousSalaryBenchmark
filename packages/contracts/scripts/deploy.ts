@@ -35,6 +35,8 @@ async function main() {
   const contract = await Factory.deploy();
   await contract.waitForDeployment();
   const address = await contract.getAddress();
+  const deployTx = contract.deploymentTransaction();
+  const deployBlock = deployTx?.blockNumber ?? null;
 
   const artifact = await artifacts.readArtifact(CONTRACT_NAME);
   const deployment = {
@@ -42,6 +44,7 @@ async function main() {
     chainId: (await ethers.provider.getNetwork()).chainId.toString(),
     address,
     deployedAt: new Date().toISOString(),
+    ...(deployBlock != null ? { deployBlock } : {}),
   };
 
   mkdirSync(OUT_ROOT, { recursive: true });
