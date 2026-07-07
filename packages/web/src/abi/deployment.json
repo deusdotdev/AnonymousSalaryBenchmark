@@ -2,5 +2,6 @@
   "network": "sepolia",
   "chainId": "11155111",
   "address": "0xb452901e6C5231e8c15Feda1294143d48574325B",
+  "deployBlock": 11173564,
   "deployedAt": "2026-06-30T15:30:01.292Z"
 }

@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useReadContracts } from "wagmi";
 import { resolveCategory } from "@/lib/category-registry";
+import { MIN_PARTICIPANTS } from "@/lib/categories";
 import {
   SEED_MANIFEST,
   type SeedCategoryEntry,
@@ -192,7 +193,7 @@ export function useExplorePools() {
         (pool) =>
           manifestIdSet.has(pool.entry.categoryId) ||
           discoveredIdSet.has(pool.entry.categoryId) ||
-          pool.participants > 0
+          pool.participants >= MIN_PARTICIPANTS
       );
   }, [catalogEntries, countResults, tierResults, manifestIdSet, discoveredById, discoveredIdSet]);
 

@@ -54,9 +54,10 @@ export function ExplorePageContent() {
 
         {discoveryError && (
           <div className="mt-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm text-amber-800">
-            Could not scan on-chain events for new pools. Seeded categories may still appear with
-            stale counts. Try again or use a dedicated Sepolia RPC via{" "}
-            <code className="font-mono text-xs">NEXT_PUBLIC_SEPOLIA_RPC_URL</code>.
+            Could not scan on-chain events for new pools. Seeded demo pools may still appear.
+            Set an Alchemy Sepolia URL in{" "}
+            <code className="font-mono text-xs">NEXT_PUBLIC_SEPOLIA_RPC_URL</code> and redeploy
+            (PublicNode blocks archive getLogs).
           </div>
         )}
 
