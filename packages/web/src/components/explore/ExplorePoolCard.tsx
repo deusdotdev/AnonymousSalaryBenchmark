@@ -49,25 +49,6 @@ export function ExplorePoolCard({ pool }: ExplorePoolCardProps) {
 
       <p className="mt-4 text-sm leading-relaxed text-muted">{pool.statusMessage}</p>
 
-      <div
-        className={`mt-4 rounded-2xl p-3 ring-1 ${pool.isLive ? "ring-green/20" : "ring-slate-200"}`}
-      >
-        <div className="mb-1.5 flex items-center justify-between text-[11px] font-semibold text-muted">
-          <span>Pool fill</span>
-          <span>{pool.participants} participants</span>
-        </div>
-        <div className="h-2 overflow-hidden rounded-full bg-green/10">
-          <div
-            className={`h-full rounded-full transition-all ${
-              pool.isLive
-                ? "bg-gradient-to-r from-green to-green-deep"
-                : "bg-slate-200"
-            }`}
-            style={{ width: `${pool.fillPercent}%` }}
-          />
-        </div>
-      </div>
-
       {(pool.tier5Average != null || pool.tier10Average != null) && (
         <div className="mt-3 grid grid-cols-2 gap-2 text-center text-xs">
           {pool.tier5Average != null && (

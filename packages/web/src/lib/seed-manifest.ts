@@ -58,10 +58,6 @@ export function appCategoryHref(positionId: number, cityId: number, seniorityId:
   return `/app?${params.toString()}`;
 }
 
-export function fillPercent(participants: number, target = 10): number {
-  return Math.min(100, Math.round((participants / target) * 100));
-}
-
 export interface TierSnapshot {
   tier: number;
   averageUsd: number;

@@ -8,7 +8,6 @@ import {
   SEED_MANIFEST,
   type SeedCategoryEntry,
   entryFromCategoryRef,
-  fillPercent,
   isPoolLive,
   poolStatusMessage,
   appCategoryHref,
@@ -31,7 +30,6 @@ export interface ExplorePool {
   tierSnapshots: TierSnapshot[];
   trend: TierTrend | null;
   isLive: boolean;
-  fillPercent: number;
   statusMessage: string;
   appHref: string;
   liveSynced: boolean;
@@ -183,7 +181,6 @@ export function useExplorePools() {
           tierSnapshots,
           trend,
           isLive: isPoolLive(participants),
-          fillPercent: fillPercent(participants),
           statusMessage: poolStatusMessage(participants, tier10Average, tier5Average),
           appHref: appCategoryHref(entry.positionId, entry.cityId, entry.seniorityId),
           liveSynced: onChainCount !== undefined,
